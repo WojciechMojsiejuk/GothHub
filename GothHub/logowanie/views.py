@@ -1,9 +1,8 @@
 from django.contrib.auth import login, authenticate
 from django.shortcuts import render, redirect
 from django.http import HttpResponse, HttpResponseRedirect
-from django.contrib.auth.models import User
 
-
+from .models import Profile
 from .forms import SignUpForm, LoginForm
 
 def signup(request):
