@@ -1,3 +1,6 @@
+#To open instantly from cloud
+>docker run -p 8000:8000 --name goth kedka/gothhub
+
 #Build docker image
 >docker build -t gothhub .
 
