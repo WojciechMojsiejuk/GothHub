@@ -1,0 +1,10 @@
+#Build docker image
+>docker build -t gothhub .
+
+#Run docker container
+>docker run -p 8000:8000 --name goth gothhub
+
+#To run in the background add -d flag
+
+#Stop server
+>docker stop goth
