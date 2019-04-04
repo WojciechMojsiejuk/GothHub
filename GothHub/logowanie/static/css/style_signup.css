@@ -1,7 +1,9 @@
-<--! -->
-.body
+<--! do logowania, rejestracji -->
+@import url('https://fonts.googleapis.com/css?family=Abril+Fatface&subset=latin-ext');
+
+body
 {
-  font-family: 'Abril Fatface', cursive;
+  font-family: 'Abril Fatface' !important;
   background-color: red;
 }
 .h1
