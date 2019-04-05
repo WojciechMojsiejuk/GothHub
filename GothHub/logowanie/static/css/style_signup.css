@@ -1,11 +1,7 @@
-.logo
-{
-  color: yellow;
-  background-color: pink;
-}
+
 body
 {
-  background-color: black;
+  background-color: orange;
   font-family: 'Lora', serif;
   color: pink;
 }
@@ -17,7 +13,11 @@ body
 {
 
 }
-
+.logo
+{
+  color: yellow;
+  background-color: pink;
+}
 .login-box
 {
   background-color: red;
