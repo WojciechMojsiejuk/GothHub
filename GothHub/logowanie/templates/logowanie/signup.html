@@ -1,0 +1,42 @@
+{% load static %}
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>GothHub login</title>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Lora" >
+    <link rel="stylesheet" href="{% static 'css/style_signup.css' %}">
+
+  </head>
+  <body>
+
+  	<div class="logo">
+  		<h1>GothHub</h1>
+  	</div>
+
+  	<div class="login-box">
+      <!-- tu ponizej Pawla kod, nwm jak go stad wywalic zeby byl przekierowywany z innego pliku -->
+      {% block content %}
+        {% if error_message %}<p style="color: red"><strong>{{error_message}}</strong></p>{% endif %}
+        {% if form.login  %}<h2>Logowanie</h2>
+        {% else %}<h2>Rejestracja</h2>{% endif %}
+        <form method="post">
+          {% csrf_token %}
+          {% for field in form %}
+            <p>
+              {{ field.label_tag }}<br>
+              {{ field }}
+              {% if field.help_text %}
+                <small style="color: grey">{{ field.help_text }}</small>
+              {% endif %}
+              {% for error in field.errors %}
+                <p style="color: red">{{ error }}</p>
+              {% endfor %}
+            </p>
+          {% endfor %}
+          <button type="submit">Zaloguj</button>
+        </form>
+      {% endblock %}
+  	</div>
+
+  </body>
+</html>
