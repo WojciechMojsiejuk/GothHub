@@ -9,7 +9,7 @@ body
 {
 	border: dotted;
 	border-bottom-color: blue;
-	background-color: brown;
+	background-color: black;
 }
 
 .top:after {
