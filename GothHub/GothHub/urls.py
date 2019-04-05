@@ -20,5 +20,6 @@ import logowanie
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('login/', include('logowanie.urls') ),
-    path('join/', logowanie.views.signup, name='join')
+    path('join/', logowanie.views.signup, name='join'),
+    path('home/', include('home.urls')),
 ]
