@@ -4,7 +4,7 @@
     <meta charset="utf-8">
     <title>GothHub login</title>
     <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Lora" >
-    <link rel="stylesheet" href="{% static 'css/style_signup.css' %}">
+    <link rel="stylesheet" href="{% static 'css/style.css' %}">
 
   </head>
   <body>
@@ -26,7 +26,7 @@
               {{ field.label_tag }}<br>
               {{ field }}
               {% if field.help_text %}
-                <small style="color: grey">{{ field.help_text }}</small>
+                <small>{{ field.help_text }}</small>
               {% endif %}
               {% for error in field.errors %}
                 <p style="color: red">{{ error }}</p>
