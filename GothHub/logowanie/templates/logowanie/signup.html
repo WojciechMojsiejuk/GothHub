@@ -16,7 +16,7 @@
       <!-- tu ponizej Pawla kod, nwm jak go stad wywalic zeby byl przekierowywany z innego pliku -->
       {% block content %}
         {% if error_message %}<p style="color: red"><strong>{{error_message}}</strong></p>{% endif %}
-        {% if form.login  %}<h2>Logowanie</h2>
+        {% if form.login %}<h2>Logowanie</h2>
         {% else %}<h2>Rejestracja</h2>{% endif %}
         <form method="post">
           {% csrf_token %}
@@ -32,7 +32,7 @@
               {% endfor %}
             </p>
           {% endfor %}
-          <button type="submit">Zaloguj</button>
+          <button type="submit">{% if form.login %}Zaloguj{% else %}Zarejestruj{% endif %}</button>
         </form>
       {% endblock %}
   	</div>
