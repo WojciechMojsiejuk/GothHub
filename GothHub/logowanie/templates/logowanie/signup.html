@@ -3,13 +3,13 @@
   <head>
     <meta charset="utf-8">
     <title>GothHub login</title>
-    <link rel="stylesheet" href="{% static 'css/style.css' %}">
+    <link rel="stylesheet" href="{% static 'css/style.css' %}?{% now "U" %}">
 
   </head>
   <body>
 
   	<div class="logo">
-  		<h1>GothHub1</h1>
+  		<h1>GothHub</h1>
   	</div>
 
   	<div class="login-box">
@@ -24,6 +24,7 @@
             <p>
               {{ field.label_tag }}<br>
               {{ field }}
+              <br>
               {% if field.help_text %}
                 <small>{{ field.help_text }}</small>
               {% endif %}
