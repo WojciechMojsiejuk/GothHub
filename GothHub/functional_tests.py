@@ -15,7 +15,7 @@ class NewVisitorTest(unittest.TestCase):
         self.browser.get('http://localhost:8000/login/')
 
         #Title should inform it's a login page
-        self.assertIn('Login',self.browser.title)
+        self.assertIn('GothHub login',self.browser.title)
 
         #Header should inform it's a login form
         header_text=self.browser.find_element_by_tag_name('h2').text
@@ -37,7 +37,7 @@ class NewVisitorTest(unittest.TestCase):
         self.browser.get('http://localhost:8000/join/')
 
         #Title should inform it's a registation page
-        self.assertIn('Registration',self.browser.title)
+        self.assertIn('GothHub login',self.browser.title)
 
         #Header should inform it's a login form
         header_text=self.browser.find_element_by_tag_name('h2').text
@@ -98,13 +98,14 @@ class NewVisitorTest(unittest.TestCase):
         #User provides password
         password_input = self.browser.find_element_by_id('id_password1')
         password_input.send_keys('Haslo_to_okon')
-        
+
         #User repeats incorrect password
         password_confirm_input = self.browser.find_element_by_id('id_password2')
         password_confirm_input.send_keys('Haslo_to_jednak_nie_okon')
 
         #User sends form
         password_confirm_input.send_keys(Keys.ENTER)
+
 
 
     class UserFunctionsTest(unittest.TestCase):

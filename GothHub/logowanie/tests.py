@@ -5,6 +5,8 @@ from django.test import Client
 
 from logowanie.views import index
 from logowanie.views import signup
+from .forms import *
+
 # Create your tests here.
 
 class LoginPageTest(TestCase):
@@ -25,6 +27,13 @@ class LoginPageTest(TestCase):
         self.assertIn(b'Username',response.content)
         self.assertIn(b'Password',response.content)
         self.assertIn(b'<button type="submit">Zaloguj</button>',response.content)
+
+    def test_user_can_login_to_his_home_page_by_valid_form(self):
+        self.user = User.objects.create(username="JanKowalski", email="jankowalski@gmail.com", password="Haslo_to_okon")
+        form = LoginForm(data={'username': 'JanKowalski', 'password': 'Haslo_to_okon'})
+        self.assertTrue(form.is_valid())
+        response = self.client.get(reverse('logowanie:home'))
+        self.assertEqual(response.status_code, 200)
 
 class RegistrationPageTest(TestCase):
 
@@ -51,4 +60,4 @@ class RegistrationPageTest(TestCase):
         request=HttpRequest()
         request.method='POST'
         response=signup(request)
-        DoesNotExist
+        pass
