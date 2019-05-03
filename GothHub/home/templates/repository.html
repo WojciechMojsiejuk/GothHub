@@ -1,0 +1,8 @@
+{% extends "home.html" %}
+
+{% block user_block %}
+{% for repository in repositories %}
+    <h2>{{ repository.name }}</h2>
+    <p>{{ repository.is_public }}</p>
+{% endfor %}
+{% endblock %}
