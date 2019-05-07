@@ -1,6 +1,11 @@
 {% extends "home.html" %}
 
 {% block user_block %}
+  <form>
+  Nazwa: <input type="text" name="Name"><br>
+  <input type="checkbox" name="publiczny"> Publiczny <br>
+  <input type="submit" value="Submit">
+  </form>
 {% for repository in repositories %}
     <h2>{{ repository.name }}</h2>
     <p>{{ repository.is_public }}</p>
