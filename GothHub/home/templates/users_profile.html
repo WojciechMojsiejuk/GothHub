@@ -1,0 +1,9 @@
+{% extends "home.html" %}
+
+{% block user_block %}
+  <!-- {% if user %} -->
+    <p>{{ user.username }}<p>
+  <!-- {% endif %} -->
+  {% block repo_block %}
+  {% endblock %}
+{% endblock %}

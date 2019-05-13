@@ -4,5 +4,6 @@ from . import views
 app_name = 'home'
 urlpatterns = [
     path('', views.home, name='home'),
-    path('repository',views.repository, name='repository')
+    path('repository', views.repository, name='repository'),
+    path('<str:username>', views.user, name='user')
 ]

@@ -36,8 +36,7 @@ def signup(request):
 # Basic login form
 def index(request):
     if request.user.is_authenticated:
-        # user home page needed
-        return HttpResponseRedirect('/admin/')
+        return HttpResponseRedirect('/')
     if request.method == 'POST':
         form = LoginForm(data=request.POST)
         if form.is_valid():
