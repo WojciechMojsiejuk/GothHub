@@ -1,6 +1,6 @@
-{% extends "home.html" %}
+{% extends "users_profile.html" %}
 
-{% block user_block %}
+{% block repo_block %}
   <form method="post">
     {% csrf_token %}
     {{ form }}
