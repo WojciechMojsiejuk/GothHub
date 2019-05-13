@@ -5,5 +5,5 @@ app_name = 'home'
 urlpatterns = [
     path('', views.home, name='home'),
     path('repository', views.repository, name='repository'),
-    path('<str:username>', views.user, name='user')
+    path('user/<str:username>', views.user, name='user')
 ]

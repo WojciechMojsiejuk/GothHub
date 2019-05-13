@@ -17,14 +17,14 @@ from django.contrib import admin
 from django.urls import path, include
 from django.conf import settings
 from django.conf.urls.static import static
-import logowanie
+import upload, logowanie
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('login/', include('logowanie.urls') ),
+    path('login/', include('logowanie.urls')),
     path('join/', logowanie.views.signup, name='join'),
-    path('', include('home.urls')),
     path('upload/', include('upload.urls')),
+    path('', include('home.urls')),
 ]
 
 if settings.DEBUG:
