@@ -6,8 +6,8 @@
     {{ form }}
     <input type="submit" value="Submit">
   </form>
-{% for repository in repositories %}
-    <h2>{{ repository.name }}</h2>
-    <p>{{ repository.is_public }}</p>
-{% endfor %}
+  {% for repository in repositories %}
+      <h2>{{ repository.name }}</h2>
+      <p>{{ repository.is_public }}</p>
+  {% endfor %}
 {% endblock %}

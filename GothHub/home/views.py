@@ -13,7 +13,8 @@ def repository(request):
         if form.is_valid():
             name = form.cleaned_data.get('name')
             is_public = form.cleaned_data.get('is_public')
-            Repository.objects.create(name=name, is_public=is_public)
+            user = request.user
+            Repository.objects.create(name=name, is_public=is_public, owner=user)
             return HttpResponseRedirect('/')
     else:
         form = RepoCreationForm()
