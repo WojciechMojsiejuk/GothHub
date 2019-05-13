@@ -15,7 +15,9 @@ def home(request):
 
 def user(request, username):
     if request.user.is_authenticated:
-        user = User.objects.get(username=username)
+        user = request.user
+    else:
+        user = None
     return render(request, 'users_profile.html', {'user':user})
 
 
