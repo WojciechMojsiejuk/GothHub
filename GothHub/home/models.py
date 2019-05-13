@@ -4,6 +4,7 @@ from logowanie.models import User
 
 class Repository(models.Model):
     name = models.CharField(max_length=128)
+    owner = models.ForeignKey(User, on_delete=models.CASCADE)
     is_public = models.BooleanField(default=False)
 
     def __str__(self):
