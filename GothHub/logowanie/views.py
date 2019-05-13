@@ -79,7 +79,7 @@ def activate(request, uidb64, token):
         user.profile.email_confirmed = True
         user.save()
         login(request, user)
-        return HttpResponseRedirest('/')
+        return HttpResponseRedirect('/')
 
     else:
         return HttpResponse('Nie zalogowano')
