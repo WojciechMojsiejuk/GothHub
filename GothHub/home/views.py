@@ -1,11 +1,23 @@
 from django.shortcuts import render
 from django.http import HttpResponseRedirect
+from django.contrib.auth.models import User
+
 
 from .models import Repository
 from .forms import RepoCreationForm
 
 def home(request):
-    return render(request, 'home.html', {})
+    if request.user.is_authenticated:
+        user = request.user
+        return HttpResponseRedirect('/' + user.username)
+    else:
+        return render(request, 'home.html', {})
+
+def user(request, username):
+    if request.user.is_authenticated:
+        user = User.objects.get(username=username)
+    return render(request, 'users_profile.html', {'user':user})
+
 
 def repository(request):
     if request.user.is_authenticated:
