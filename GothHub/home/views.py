@@ -2,7 +2,7 @@ from django.shortcuts import render
 from django.http import HttpResponseRedirect
 
 from .models import Repository
-from .forms import RepoCreationForm
+from .forms import RepoCreationForm,CatalogCreationForm
 
 def home(request):
     return render(request, 'home.html', {})
@@ -23,3 +23,12 @@ def repository(request):
         return render(request, 'repository.html', {'form':form, 'repositories':repositories})
     else:
         return HttpResponseRedirect('/')
+
+def catalog(request):
+    if request.user.is_authenticated:
+        user = request.user
+        if request.method == 'POST':
+            form = CatalogCreationForm(request.POST)
+            if form.is_valid():
+                name = form.cleaned_data.get('name')
+                

@@ -1,0 +1,8 @@
+{% extends "home.html" %}
+{% block content_block %}
+<form method="post">
+  {% csrf_token %}
+  {{ form }}
+  <input type="submit" value="Submit">
+</form>
+{% endblock %}
