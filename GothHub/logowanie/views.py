@@ -47,7 +47,7 @@ def index(request):
             if user is not None:
                 if user.profile.email_confirmed:
                     login(request, user)
-                    return HttpResponse('Zalogowano poprawnie')
+                    return HttpResponseRedirect('/')
                 else:
                     return HttpResponse('Nie potwierdzono adresu email podanego użytkownika')
             else:
@@ -79,7 +79,7 @@ def activate(request, uidb64, token):
         user.profile.email_confirmed = True
         user.save()
         login(request, user)
-        return HttpResponse('Potwierdzono adres email i zalogowano')
+        return HttpResponseRedirest('/')
 
     else:
         return HttpResponse('Nie zalogowano')
