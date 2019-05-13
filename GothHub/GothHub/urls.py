@@ -18,6 +18,7 @@ from django.urls import path, include
 from django.conf import settings
 from django.conf.urls.static import static
 import logowanie
+import upload
 
 urlpatterns = [
     path('admin/', admin.site.urls),
@@ -25,6 +26,7 @@ urlpatterns = [
     path('join/', logowanie.views.signup, name='join'),
     path('', include('home.urls')),
     path('upload/', include('upload.urls')),
+    path('download/', upload.views.download, name='download'),
 ]
 
 if settings.DEBUG:
