@@ -3,6 +3,10 @@
 {% block user_block %}
   {{ user.username }}
   <br/>
+  <form method="post" action="/logout/">
+    <button type="submit" class="button1">Wyloguj</button>
+    {% csrf_token %}
+  </form>
   <button type="submit" class="button1"  value="edytujProfil">Edytuj profil</button>
   <button type="submit" class="button1" value="dodajRepozytorium">Dodaj repozytorium</button>
 
