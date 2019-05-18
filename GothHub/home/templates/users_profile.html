@@ -1,6 +1,6 @@
 {% extends "home.html" %}
 
-{% block user_block %}
+<!-- {% block user_block %}
   {{ user.username }}
   <br/>
   <form method="post" action="/logout/">
@@ -17,8 +17,11 @@
 
   {% block repo_block %}
   {% endblock %}
-{% endblock %}
+{% endblock %} -->
 {% block content_block %}
+  {% if username %}
+    {{ username }}
+  {% endif %}
   {% if username == user.username %}
     <div class="repo">
       <button class="button2" type="submit" value="dodajPlik">Dodaj plik</button>

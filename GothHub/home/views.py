@@ -7,18 +7,14 @@ from .models import Repository
 from .forms import RepoCreationForm,CatalogCreationForm
 
 def home(request):
-    if request.user.is_authenticated:
-        user = request.user
-        return HttpResponseRedirect('/user/' + user.username)
-    else:
-        return render(request, 'home.html', {})
+    # if request.user.is_authenticated:
+    #     user = request.user
+    #     return HttpResponseRedirect('/user/' + user.username)
+    # else:
+    return render(request, 'home.html', {})
 
 def user(request, username):
-    if request.user.is_authenticated:
-        user = request.user
-        return render(request, 'users_profile.html', {'user':user, 'username':username})
-    else:
-        return render(request, 'home.html', {'username':username})
+    return render(request, 'users_profile.html', {'username':username})
 
 
 

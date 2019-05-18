@@ -46,7 +46,7 @@ def index(request):
             if user is not None:
                 if user.profile.email_confirmed:
                     login(request, user)
-                    return HttpResponseRedirect('/')
+                    return HttpResponseRedirect('/user/'+user.username)
                 else:
                     return HttpResponse('Nie potwierdzono adresu email podanego użytkownika')
             else:
