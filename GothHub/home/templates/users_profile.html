@@ -1,9 +1,34 @@
 {% extends "home.html" %}
 
-{% block user_block %}
-  {% if user %}
-    <p>{{ user.username }}<p>
-  {% endif %}
+<!-- {% block user_block %}
+  {{ user.username }}
+  <br/>
+  <form method="post" action="/logout/">
+    <button type="submit" class="button1">Wyloguj</button>
+    {% csrf_token %}
+  </form>
+  <button type="submit" class="button1"  value="edytujProfil">Edytuj profil</button>
+  <button type="submit" class="button1" value="dodajRepozytorium">Dodaj repozytorium</button>
+
+  {% for repository in repositories %}
+    <h2>{{ repository.name }}</h2>
+    <p>{{ repository.is_public }}</p>
+  {% endfor %}
+
   {% block repo_block %}
   {% endblock %}
+{% endblock %} -->
+{% block content_block %}
+  {% if username %}
+    {{ username }}
+  {% endif %}
+  {% if username == user.username %}
+    <div class="repo">
+      <button class="button2" type="submit" value="dodajPlik">Dodaj plik</button>
+      <button class="button2" type="submit" value="dodajKepozytorium">Dodaj katalog</button>
+
+      <button class="button3" type="submit" value="edytuj">Edytuj</button>
+      <button class="button4" type="submit" value="usun">Usun</button>
+    </div>
+  {% endif %}
 {% endblock %}
