@@ -3,7 +3,7 @@ from django.http import HttpResponseRedirect
 from django.contrib.auth.models import User
 
 
-from .models import Repository
+from .models import Repository, Catalog
 from .forms import RepoCreationForm,CatalogCreationForm
 
 def home(request):
@@ -61,10 +61,20 @@ def repository(request):
     else:
         return HttpResponseRedirect('/')
 
-def catalog(request):
+def newcatalog(request, username, repository):
     if request.user.is_authenticated:
         user = request.user
         if request.method == 'POST':
             form = CatalogCreationForm(request.POST)
             if form.is_valid():
                 name = form.cleaned_data.get('name')
+                searched_repository=Repository.objects.get(owner=user,name=repository)
+                print(searched_repository.id)
+                Catalog.objects.create(name=name,repository_Id=searched_repository,parent_catalog=None)
+                return HttpResponseRedirect('/')
+        else:
+            form = CatalogCreationForm()
+            catalogs=Catalog.objects.filter(repository_Id=Repository.objects.get(owner=user,name=repository).pk)
+        return render(request, 'catalog.html',{'form':form,'catalogs':catalogs})
+    else:
+        raise 404
