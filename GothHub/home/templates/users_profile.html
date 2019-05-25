@@ -31,8 +31,9 @@
         {% endfor %}
       {% endif %}
       <button class="button2" type="submit" value="dodajPlik">Dodaj plik</button>
-      <button class="button2" type="submit" value="dodajKepozytorium">Dodaj katalog</button>
-
+      <form method="get" action="/user/{{ request.user.username }}/None/add_catalog">
+          <button class="button2" type="submit" value="dodajKatalog">Dodaj katalog</button>
+      </form>
       <button class="button3" type="submit" value="edytuj">Edytuj</button>
       <button class="button4" type="submit" value="usun">Usun</button>
     </div>

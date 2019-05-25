@@ -1,0 +1,28 @@
+{% extends "users_profile.html" %}
+{% block content_block %}
+  {% if username %}
+    {{ username }}
+  {% endif %}
+  {% if username == user.username or repository.is_public == True%}
+    <div class="catalog">
+    <h1>Catalogs:</h1>
+      {% if catalogs in not None %}
+        {% for catalog in catalogs %}
+          <h2>{{ catalog.name }}</h2>
+        {% endfor %}
+      {% endif %}
+    <h1>Files:</h1>
+      {% if files in not None %}
+        {% for file in files %}
+          <h2>{{ catalog.name }}</h2>
+        {% endfor %}
+      {% endif %}
+      <button class="button2" type="submit" value="dodajPlik">Dodaj plik</button>
+      <form method="get" action="/user/{{ request.user.username }}/{{ request.parent_catalog }}/add_repository">
+          <button class="button2" type="submit" value="dodajKatalog">Dodaj katalog</button>
+      </form>
+      <button class="button3" type="submit" value="edytuj">Edytuj</button>
+      <button class="button4" type="submit" value="usun">Usun</button>
+    </div>
+  {% endif %}
+{% endblock %}
