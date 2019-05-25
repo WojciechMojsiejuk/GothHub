@@ -16,7 +16,9 @@
     </div>
     <div class="container">
       <div class="user">
-        <br />user
+
+        <img src="media/gothic_mouse_1.jpg" alt=" ">
+        <br/>user
         {% if request.user.is_authenticated %}
           <!-- w tym ifie wyświetlają się wszystkie rzeczy, ktre powinien widzieć zalogowany użytkownik -->
           {{ request.user.username }}
