@@ -27,7 +27,7 @@ def user(request, username):
 
 
 
-def add_repository(request):
+def add_repository(request, username):
     if request.user.is_authenticated:
         user = request.user
         if request.method == 'POST':
