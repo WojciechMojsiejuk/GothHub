@@ -61,7 +61,7 @@ def repository(request):
     else:
         return HttpResponseRedirect('/')
 
-def newcatalog(request, username, repository):
+def add_catalog(request, username, repository):
     if request.user.is_authenticated:
         user = request.user
         if request.method == 'POST':
