@@ -7,16 +7,15 @@ from .models import Repository
 from .forms import RepoCreationForm,CatalogCreationForm
 
 def home(request):
-    if request.user.is_authenticated:
-        user = request.user
-        return HttpResponseRedirect('/' + user.username)
-    else:
-        return render(request, 'home.html', {})
+    # if request.user.is_authenticated:
+    #     user = request.user
+    #     return HttpResponseRedirect('/user/' + user.username)
+    # else:
+    return render(request, 'home.html', {})
 
 def user(request, username):
-    if request.user.is_authenticated:
-        user = User.objects.get(username=username)
-    return render(request, 'users_profile.html', {'user':user})
+    return render(request, 'users_profile.html', {'username':username})
+
 
 
 def repository(request):
@@ -43,4 +42,3 @@ def catalog(request):
             form = CatalogCreationForm(request.POST)
             if form.is_valid():
                 name = form.cleaned_data.get('name')
-                
