@@ -3,14 +3,14 @@
   {% if username %}
     {{ username }}
   {% endif %}
+  {% if repositories_owner is not None %}
+    {% for repository in repositories_owner %}
+      <h2>{{ repository.name }}</h2>
+      <p>{{ repository.is_public }}</p>
+    {% endfor %}
+  {% endif %}
   {% if username == user.username %}
     <div class="repo">
-      {% if repositories_owner is not None %}
-        {% for repository in repositories_owner %}
-          <h2>{{ repository.name }}</h2>
-          <p>{{ repository.is_public }}</p>
-        {% endfor %}
-      {% endif %}
       <button class="button2" type="submit" value="dodajPlik">Dodaj plik</button>
       <form method="get" action="/user/{{ request.user.username }}/None/add_catalog">
           <button class="button2" type="submit" value="dodajKatalog">Dodaj katalog</button>
