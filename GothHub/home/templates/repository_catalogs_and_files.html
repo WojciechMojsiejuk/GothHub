@@ -6,13 +6,13 @@
   {% if username == user.username or repository.is_public == True%}
     <div class="catalog">
     <h1>Catalogs:</h1>
-      {% if catalogs in not None %}
+      {% if catalogs is not None %}
         {% for catalog in catalogs %}
           <h2>{{ catalog.name }}</h2>
         {% endfor %}
       {% endif %}
     <h1>Files:</h1>
-      {% if files in not None %}
+      {% if files is not None %}
         {% for file in files %}
           <h2>{{ catalog.name }}</h2>
         {% endfor %}
