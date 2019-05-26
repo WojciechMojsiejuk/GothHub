@@ -5,7 +5,7 @@
   {% endif %}
   {% if repositories_owner is not None %}
     {% for repository in repositories_owner %}
-      <h2>{{ repository.name }}</h2>
+      <a href="/users/{{ username }}/{{ repository.name }}"><h2>{{ repository.name }}</h2></a>
       <p>{{ repository.is_public }}</p>
     {% endfor %}
   {% endif %}

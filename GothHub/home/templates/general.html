@@ -34,7 +34,7 @@
           </form>
           {% if repositories is not None %}
             {% for repository in repositories %}
-              <h2>{{ repository.name }}</h2>
+              <a href="/users/{{ request.user.username }}/{{ repository.name }}"><h2>{{ repository.name }}</h2></a>
               <p>{{ repository.is_public }}</p>
             {% endfor %}
           {% endif %}
