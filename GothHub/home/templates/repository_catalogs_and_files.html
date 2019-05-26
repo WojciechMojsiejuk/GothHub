@@ -5,7 +5,7 @@
   {% endif %}
   {{repository.name}}
   {{parent_catalog.name}}
-  {% if username == user.username or repository.is_public == True%}
+  {% if user.username == request.user.username or repository.is_public == True %}
     <div class="catalog">
     <h1>Catalogs:</h1>
       {% if catalogs is not None %}
@@ -30,7 +30,9 @@
           <button class="button4" type="submit" value="usun">Usun</button>
         {% endfor %}
       {% endif %}
-      <button class="button2" type="submit" value="dodajPlik">Dodaj plik</button>
+      <form method="get" action="/upload">
+        <button class="button2" type="submit" value="dodajPlik">Dodaj plik</button>
+      </form>
       {% if parent_catalog.name == None %}
         <form method="get" action="/user/{{ request.user.username }}/{{ repository.name }}/None/add_catalog">
         {% else %}

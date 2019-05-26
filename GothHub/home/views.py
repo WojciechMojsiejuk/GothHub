@@ -108,7 +108,7 @@ def catalogs_and_files(request,username,repository,parental_catalog):
             files=File.objects.filter(author=user,repository_Id=searched_repository, catalog_Id=searched_parental_catalog)
         except(File.DoesNotExist):
             files=None
-        return render(request, 'repository_catalogs_and_files.html', {'username':user, 'repository':searched_repository,'parent_catalog':searched_parental_catalog,'catalogs':catalogs,'files':files})
+        return render(request, 'repository_catalogs_and_files.html', {'user':user.username, 'repository':searched_repository,'parent_catalog':searched_parental_catalog,'catalogs':catalogs,'files':files})
     else:
         return HttpResponseRedirect('/')
 
