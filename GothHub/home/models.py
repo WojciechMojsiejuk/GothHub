@@ -14,10 +14,10 @@ class Repository(models.Model):
 class Catalog(models.Model):
     name = models.CharField(max_length=128)
     repository_Id = models.ForeignKey(Repository, on_delete=models.CASCADE)
-    parent_catalog = models.ForeignKey('Catalog', on_delete=models.CASCADE, null=True, default=None, blank=True)
+    parent_catalog = models.ForeignKey('Catalog', on_delete=models.CASCADE, null=True, default=None)
     def __str__(self):
         return self.name
-        
+
 class File(models.Model):
     author = models.ForeignKey(User, on_delete=models.CASCADE)
     file_name = models.CharField(max_length=128)

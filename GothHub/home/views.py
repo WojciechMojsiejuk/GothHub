@@ -102,3 +102,25 @@ def catalogs_and_files(request,username,repository,parental_catalog):
         return render(request, 'repository_catalogs_and_files.html', {'username':user, 'repository':searched_repository,'parent_catalog':searched_parental_catalog,'catalogs':catalogs,'files':files})
     else:
         return HttpResponseRedirect('/')
+
+def delete_catalog_and_files_within_it(request,username,repository,parental_catalog,catalog):
+    if request.user.is_authenticated:
+        user = request.user
+        searched_repository=Repository.objects.get(owner=user,name=repository)
+        try:
+            searched_parental_catalog=Catalog.objects.get(name=parental_catalog,repository_Id=searched_repository)
+        except(Catalog.DoesNotExist):
+            searched_parental_catalog=None
+        try:
+            searched_catalog = Catalog.objects.get(name=catalog,repository_Id=searched_repository,parent_catalog=searched_parental_catalog)
+        except(Catalog.DoesNotExist):
+            raise 404
+        try:
+            files_in_searched_catalog = File.objects.filter(author=user,repository_Id=searched_repository,catalog_Id = searched_catalog)
+            files_in_searched_catalog.delete()
+        except(File.DoesNotExist):
+            pass
+        searched_catalog.delete()
+        return HttpResponseRedirect('/')
+    else:
+        return HttpResponseRedirect('/')
