@@ -9,6 +9,8 @@ def home(request):
     logged_user = request.user
     if logged_user.is_authenticated is True:
         repositories = Repository.objects.filter(owner=logged_user)
+        for repository in repositories:
+            print(repository)
         return render(request, 'home.html', {'repositories':repositories})
     return render(request, 'home.html', {'repositories':None})
 
@@ -80,6 +82,7 @@ def add_catalog(request, username, repository, parental_catalog):
         return render(request, 'catalog.html',{'form':form})
     else:
         raise 404
+
 def catalogs_and_files(request,username,repository,parental_catalog):
     if request.user.is_authenticated:
         user = request.user
