@@ -11,7 +11,9 @@
   {% endif %}
   {% if username == user.username %}
     <div class="repo">
-      <button class="button2" type="submit" value="dodajPlik">Dodaj plik</button>
+      <form method="get" action="/upload">
+        <button class="button2" type="submit" value="dodajPlik">Dodaj plik</button>
+      </form>
       <form method="get" action="/user/{{ request.user.username }}/None/add_catalog">
           <button class="button2" type="submit" value="dodajKatalog">Dodaj katalog</button>
       </form>

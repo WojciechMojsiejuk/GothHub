@@ -11,17 +11,17 @@
   <body>
     <div class="top">
       <div class="logo">
-        <h1>GothHub</h1>
+        <a href="/"><h1>GothHub</h1></a>
       </div>
     </div>
     <div class="container">
       <div class="user">
 
-        <img src="media/gothic_mouse_1.jpg" alt=" ">
+        <img src="/media/gothic_mouse_1.jpg" alt=" ">
         <br/>user
         {% if request.user.is_authenticated %}
           <!-- w tym ifie wyświetlają się wszystkie rzeczy, ktre powinien widzieć zalogowany użytkownik -->
-          {{ request.user.username }}
+          <a href="/user/{{ request.user.username }}">{{ request.user.username }}</a>
           <br/>
           <form method="post" action="/logout/">
             <button type="submit" class="button1">Wyloguj</button>
