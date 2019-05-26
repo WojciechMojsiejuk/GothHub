@@ -1,28 +1,32 @@
 from django.shortcuts import render
-from django.http import HttpResponseRedirect
+from django.http import HttpResponseRedirect, Http404
 from django.contrib.auth.models import User
 
 
 from .models import Repository, Catalog
-from .forms import RepoCreationForm,CatalogCreationForm
+from .forms import RepoCreationForm, CatalogCreationForm
 
 def home(request):
-    logged_user = request.user
-    if logged_user.is_authenticated is True:
+    if request.user.is_authenticated is True:
+        logged_user = request.user
         repositories = Repository.objects.filter(owner=logged_user)
         return render(request, 'home.html', {'repositories':repositories})
     return render(request, 'home.html', {'repositories':None})
 
 
 def user(request, username):
-    logged_user = request.user
-    owner = User.objects.get(username=username)
-    repositories_owner = Repository.objects.filter(owner=owner)
-    if logged_user.is_authenticated is True:
+    try:
+        owner = User.objects.get(username=username)
+    except User.DoesNotExist:
+        raise Http404("User does not exist")
+    repositories = None
+    repositories_owner = Repository.objects.filter(owner=owner, is_public=True)
+    if request.user.is_authenticated is True:
+        logged_user = request.user
         repositories = Repository.objects.filter(owner=logged_user)
-        return render(request, 'users_profile.html', {'username':username, 'repositories':repositories,
-            'repositories_owner':repositories_owner})
-    return render(request, 'users_profile.html', {'username':username, 'repositories':None,
+        if logged_user == owner:
+            repositories_owner = Repository.objects.filter(owner=owner)
+    return render(request, 'users_profile.html', {'username':username, 'repositories':repositories,
         'repositories_owner':repositories_owner})
 
 
@@ -60,6 +64,13 @@ def repository(request):
         return render(request, 'repository.html', {'form':form, 'repositories':repositories})
     else:
         return HttpResponseRedirect('/')
+
+def remove_repository(request, username, repository):
+    if request.user.is_authenticated:
+        user = request.user
+
+    return HttpResponseRedirect('/')
+
 
 def add_catalog(request, username, repository):
     if request.user.is_authenticated:
