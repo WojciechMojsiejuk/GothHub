@@ -1,22 +1,22 @@
 {% extends "home.html" %}
 {% block content_block %}
-    {% if username %}
-        {{ username }}
-{% endif %}
-    {% if username == user.username %}
-        <div class="repo">
-        {% if repositories in not None %}
-            {% for repository in repositories_owner %}
-                <h2>{{ repository.name }}</h2>
-                <p>{{ repository.is_public }}</p>
-            {% endfor %}
-        {% endif %}
-        <button class="button2" type="submit" value="dodajPlik">Dodaj plik</button>
-        <form method="get" action="/user/{{ request.user.username }}/None/add_catalog">
-        <button class="button2" type="submit" value="dodajKatalog">Dodaj katalog</button>
-        </form>
-        <button class="button3" type="submit" value="edytuj">Edytuj</button>
-        <button class="button4" type="submit" value="usun">Usun</button>
-        </div>
-    {% endif %}
+  {% if username %}
+    {{ username }}
+  {% endif %}
+  {% if username == user.username %}
+    <div class="repo">
+      {% if repositories_owner is not None %}
+        {% for repository in repositories_owner %}
+          <h2>{{ repository.name }}</h2>
+          <p>{{ repository.is_public }}</p>
+        {% endfor %}
+      {% endif %}
+      <button class="button2" type="submit" value="dodajPlik">Dodaj plik</button>
+      <form method="get" action="/user/{{ request.user.username }}/None/add_catalog">
+          <button class="button2" type="submit" value="dodajKatalog">Dodaj katalog</button>
+      </form>
+      <button class="button3" type="submit" value="edytuj">Edytuj</button>
+      <button class="button4" type="submit" value="usun">Usun</button>
+    </div>
+  {% endif %}
 {% endblock %}
