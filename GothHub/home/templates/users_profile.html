@@ -24,7 +24,7 @@
   {% endif %}
   {% if username == user.username %}
     <div class="repo">
-      {% if repositories in not None %}
+      {% if repositories_owner is not None %}
         {% for repository in repositories_owner %}
           <h2>{{ repository.name }}</h2>
           <p>{{ repository.is_public }}</p>
