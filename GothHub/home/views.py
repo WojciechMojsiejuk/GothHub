@@ -19,14 +19,14 @@ def user(request, username):
         owner = User.objects.get(username=username)
     except User.DoesNotExist:
         raise Http404("User does not exist")
-    repositories = None
+    # repositories = None
     repositories_owner = Repository.objects.filter(owner=owner, is_public=True)
     if request.user.is_authenticated is True:
         logged_user = request.user
-        repositories = Repository.objects.filter(owner=logged_user)
+        # repositories = Repository.objects.filter(owner=logged_user)
         if logged_user == owner:
             repositories_owner = Repository.objects.filter(owner=owner)
-    return render(request, 'users_profile.html', {'username':username, 'repositories':repositories,
+    return render(request, 'users_profile.html', {'username':username,
         'repositories_owner':repositories_owner})
 
 

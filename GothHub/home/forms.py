@@ -1,6 +1,6 @@
 from django import forms
 
-from .models import Repository,Catalog
+from .models import Repository, Catalog
 
 class RepoCreationForm(forms.Form):
     name = forms.CharField(max_length=128)

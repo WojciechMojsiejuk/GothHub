@@ -5,10 +5,12 @@ from django.template.loader import render_to_string
 from django.contrib.auth import login, authenticate, logout
 from django.contrib.auth.models import User
 from django.shortcuts import render, redirect
-from django.http import HttpResponse, HttpResponseRedirect
+from django.http import HttpResponse, HttpResponseRedirect, HttpResponseForbidden
+
+from home.models import Repository
 
 from .models import Profile
-from .forms import SignUpForm, LoginForm
+from .forms import SignUpForm, LoginForm, EditUsernameForm, EditPasswordForm
 from .tokens import account_activation_token
 
 # Registering a user
@@ -33,7 +35,7 @@ def signup(request):
         form = SignUpForm()
     return render(request, 'logowanie/signup.html', {'form': form})
 
-# Basic login form
+# Basic login view
 def index(request):
     if request.user.is_authenticated:
         return HttpResponseRedirect('/')
@@ -64,6 +66,31 @@ def index(request):
     else:
         form = LoginForm()
     return render(request, 'logowanie/signup.html', {'form': form})
+
+# Users profile edition
+def edit_profile(request, username):
+    if request.user.is_authenticated is True:
+        logged_user = request.user
+        if logged_user.username == username:
+            repositories = Repository.objects.filter(owner=logged_user)
+            if request.method == 'POST':
+                username_form = EditUsernameForm(request.POST)
+                password_form = EditPasswordForm(request.POST)
+                if username_form.is_valid():
+                    update_username = username_form.cleaned_data.get('username')
+                    logged_user.username = update_username
+                if password_form.is_valid():
+
+                    update_password = form.cleaned_data.get('new_password')
+                    logged_user.password = update_password
+                logged_user.save()
+                return HttpResponse('Zmieniono dane')
+            else:
+                username_form = EditUsernameForm()
+                password_form = EditPasswordForm()
+            return render(request, 'logowanie/edit_profile.html', {'username_form':username_form,
+                'password_form':password_form, 'user':logged_user, 'repositories':repositories})
+    return HttpResponseForbidden("Can only edit own profile")
 
 # Checks if activation token is correct, validates email
 def activate(request, uidb64, token):

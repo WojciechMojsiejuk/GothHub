@@ -1,0 +1,41 @@
+{% extends "general.html" %}
+{% block content_block %}
+  <h2>Edycja profilu</h2>
+  {% if username %}
+    {{ username }}
+  {% endif %}
+  <form method="post">
+    {% csrf_token %}
+    {% for field in username_form %}
+      <p>
+        {{ field.label_tag }}<br>
+        {{ field }}
+        <br>
+        {% if field.help_text %}
+          <small>{{ field.help_text }}</small>
+        {% endif %}
+        {% for error in field.errors %}
+          <p style="color: red">{{ error }}</p>
+        {% endfor %}
+      </p>
+    {% endfor %}
+    <button type="submit">Zatwierdź</button>
+  </form>
+  <form method="post">
+    {% csrf_token %}
+    {% for field in password_form %}
+      <p>
+        {{ field.label_tag }}<br>
+        {{ field }}
+        <br>
+        {% if field.help_text %}
+          <small>{{ field.help_text }}</small>
+        {% endif %}
+        {% for error in field.errors %}
+          <p style="color: red">{{ error }}</p>
+        {% endfor %}
+      </p>
+    {% endfor %}
+    <button type="submit">Zatwierdź</button>
+  </form>
+{% endblock %}
