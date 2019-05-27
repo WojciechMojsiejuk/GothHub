@@ -6,17 +6,17 @@ class Repository(models.Model):
     name = models.CharField(max_length=128)
     owner = models.ForeignKey(User, on_delete=models.CASCADE)
     is_public = models.BooleanField(default=False)
-
     def __str__(self):
-        return str(self.name)
-
+        return self.name
     class Meta():
         verbose_name_plural = "Repositories"
 
 class Catalog(models.Model):
     name = models.CharField(max_length=128)
     repository_Id = models.ForeignKey(Repository, on_delete=models.CASCADE)
-    parent_catalog = models.ForeignKey('Catalog', on_delete=models.CASCADE, null=True)
+    parent_catalog = models.ForeignKey('Catalog', on_delete=models.CASCADE, null=True, default=None)
+    def __str__(self):
+        return self.name
 
 class File(models.Model):
     author = models.ForeignKey(User, on_delete=models.CASCADE)
