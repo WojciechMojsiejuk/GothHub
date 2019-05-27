@@ -26,7 +26,7 @@ urlpatterns = [
     path('join/', logowanie.views.signup, name='join'),
     path('', include('home.urls')),
     path('upload/', include('upload.urls')),
-    path('download/', upload.views.download, name='download'),
+    path('download/', upload.views.file_list, name='download'),
 ]
 
 if settings.DEBUG:

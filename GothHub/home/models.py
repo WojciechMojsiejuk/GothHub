@@ -25,6 +25,7 @@ class File(models.Model):
     date_upload = models.DateField()
     repository_Id =  models.ForeignKey(Repository, on_delete=models.CASCADE)
     catalog_Id = models.ForeignKey(Catalog, on_delete=models.CASCADE)
+    dir = models.FileField(upload_to='files/')
 
 class Version(models.Model):
     file_Id = models.ForeignKey(File, on_delete=models.CASCADE)
