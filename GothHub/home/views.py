@@ -65,9 +65,13 @@ def repository(request, username, repository):
     else:
         return HttpResponseRedirect('/')
 
-def remove_repository(request, username, repository):
+def delete_repository(request, username, repository):
     if request.user.is_authenticated:
         user = request.user
+        #get list of repository catalogs
+        searched_repository=Repository.objects.get(owner=user,name=repository)
+        searched_repository.delete()
+
 
     return HttpResponseRedirect('/')
 
@@ -79,13 +83,21 @@ def add_catalog(request, username, repository, parental_catalog):
             if form.is_valid():
                 name = form.cleaned_data.get('name')
                 searched_repository=Repository.objects.get(owner=user,name=repository)
-                print(searched_repository.id)
+                try:
+                    Catalog.objects.get(name=name,repository_Id=searched_repository)
+                    return render(request, 'catalog.html', {
+                        'form': form,
+                        'error_message': 'Nie można dodać katalogu o takiej nazwie, istnieje już w danej przestrzeni'
+                    })
+                except(Catalog.DoesNotExist):
+                    pass
                 if parental_catalog == 'None':
                     Catalog.objects.create(name=name,repository_Id=searched_repository,parent_catalog=None)
+                    return HttpResponseRedirect('/user/'+str(user)+"/"+str(searched_repository.name))
                 else:
                     searched_parental_catalog=Catalog.objects.get(name=parental_catalog,repository_Id=searched_repository)
                     Catalog.objects.create(name=name,repository_Id=searched_repository,parent_catalog=searched_parental_catalog)
-                return HttpResponseRedirect('/')
+                    return HttpResponseRedirect('/user/'+str(user)+"/"+str(searched_repository.name)+"/"+str(searched_parental_catalog.name))
         else:
             form = CatalogCreationForm()
         return render(request, 'catalog.html',{'form':form})
@@ -108,11 +120,16 @@ def catalogs_and_files(request,username,repository,parental_catalog):
             files=File.objects.filter(author=user,repository_Id=searched_repository, catalog_Id=searched_parental_catalog)
         except(File.DoesNotExist):
             files=None
-        return render(request, 'repository_catalogs_and_files.html', {'user':user.username, 'repository':searched_repository,'parent_catalog':searched_parental_catalog,'catalogs':catalogs,'files':files})
+        return render(request, 'repository_catalogs_and_files.html', {
+            'user':user.username,
+            'repository':searched_repository,
+            'parent_catalog':searched_parental_catalog,
+            'catalogs':catalogs,'files':files
+        })
     else:
         return HttpResponseRedirect('/')
 
-def delete_catalog_and_files_within_it(request,username,repository,parental_catalog,catalog):
+def delete_catalog(request,username,repository,parental_catalog,catalog):
     if request.user.is_authenticated:
         user = request.user
         searched_repository=Repository.objects.get(owner=user,name=repository)
@@ -123,13 +140,11 @@ def delete_catalog_and_files_within_it(request,username,repository,parental_cata
         try:
             searched_catalog = Catalog.objects.get(name=catalog,repository_Id=searched_repository,parent_catalog=searched_parental_catalog)
         except(Catalog.DoesNotExist):
-            raise 404
-        try:
-            files_in_searched_catalog = File.objects.filter(author=user,repository_Id=searched_repository,catalog_Id = searched_catalog)
-            files_in_searched_catalog.delete()
-        except(File.DoesNotExist):
-            pass
+            raise DatabaseError()
         searched_catalog.delete()
-        return HttpResponseRedirect('/')
+        if searched_parental_catalog==None:
+            return HttpResponseRedirect('/user/'+str(user)+"/"+str(searched_repository.name))
+        else:
+            return HttpResponseRedirect('/user/'+str(user)+"/"+str(searched_repository.name)+"/"+str(searched_parental_catalog.name))
     else:
         return HttpResponseRedirect('/')
