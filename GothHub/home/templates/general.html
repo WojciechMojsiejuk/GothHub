@@ -1,0 +1,61 @@
+{% load static %}
+<html>
+  <head>
+    <meta charset="utf-8">
+  	<title>User home</title>
+    <meta charset="utf-8">
+    <title>GothHub login</title>
+    <link rel="stylesheet" href="{% static 'css/style_home.css' %}">
+    <link rel="shortcut icon" href="{%  static 'favicon.ico' %}">
+  </head>
+  <body>
+    <div class="top">
+      <div class="logo">
+        <a href="/"><h1>GothHub</h1></a>
+      </div>
+    </div>
+    <div class="container">
+      <div class="user">
+
+        <img src="/media/gothic_mouse_1.jpg" alt=" ">
+        <br/>user
+        {% if request.user.is_authenticated %}
+          <!-- w tym ifie wyświetlają się wszystkie rzeczy, ktre powinien widzieć zalogowany użytkownik -->
+          <a href="/user/{{ request.user.username }}">{{ request.user.username }}</a>
+          <br/>
+          <form method="post" action="/logout/">
+            <button type="submit" class="button1">Wyloguj</button>
+            {% csrf_token %}
+          </form>
+          <button type="submit" class="button1"  value="edytujProfil">Edytuj profil</button>
+
+         <form method="get" action="/user/{{ user.username }}/add_repository">
+            <button type="submit" class="button1" value="dodajRepozytorium">Dodaj repozytorium</button>
+          </form>
+          {% if repositories is not None %}
+            {% for repository in repositories %}
+              <a href="/user/{{ request.user.username }}/{{ repository.name }}"><h2>{{ repository.name }}</h2></a>
+              <p>{{ repository.is_public }}</p>
+            {% endfor %}
+          {% endif %}
+        {% else %}
+          <!-- w tym elsie rzeczy dla niezalogowanego użytkownika -->
+          <form method="get" action="/login">
+            <button type="submit" class="button1">Logowanie</button>
+          </form>
+          <form method="get" action="/join">
+            <button type="submit" class="button1">Rejestracja</button>
+          </form>
+        {% endif %}
+
+        {% block repo_block %}
+        {% endblock %}
+      </div>
+      <div class="content">
+        <br />content
+        {% block content_block %}
+        {% endblock %}
+      </div>
+    </div>
+  </body>
+</html>

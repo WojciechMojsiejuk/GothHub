@@ -1,13 +1,9 @@
-{% extends "home.html" %}
+{% extends "users_profile.html" %}
 
-{% block user_block %}
+{% block repo_block %}
   <form method="post">
     {% csrf_token %}
     {{ form }}
     <input type="submit" value="Submit">
   </form>
-{% for repository in repositories %}
-    <h2>{{ repository.name }}</h2>
-    <p>{{ repository.is_public }}</p>
-{% endfor %}
 {% endblock %}

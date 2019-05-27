@@ -2,7 +2,7 @@ from django.contrib.sites.shortcuts import get_current_site
 from django.utils.encoding import force_bytes, force_text
 from django.utils.http import urlsafe_base64_encode, urlsafe_base64_decode
 from django.template.loader import render_to_string
-from django.contrib.auth import login, authenticate
+from django.contrib.auth import login, authenticate, logout
 from django.contrib.auth.models import User
 from django.shortcuts import render, redirect
 from django.http import HttpResponse, HttpResponseRedirect
@@ -36,8 +36,7 @@ def signup(request):
 # Basic login form
 def index(request):
     if request.user.is_authenticated:
-        # user home page needed
-        return HttpResponseRedirect('/admin/')
+        return HttpResponseRedirect('/')
     if request.method == 'POST':
         form = LoginForm(data=request.POST)
         if form.is_valid():
@@ -47,7 +46,7 @@ def index(request):
             if user is not None:
                 if user.profile.email_confirmed:
                     login(request, user)
-                    return HttpResponseRedirect('/')
+                    return HttpResponseRedirect('/user/'+user.username)
                 else:
                     return HttpResponse('Nie potwierdzono adresu email podanego użytkownika')
             else:
@@ -79,7 +78,12 @@ def activate(request, uidb64, token):
         user.profile.email_confirmed = True
         user.save()
         login(request, user)
-        return HttpResponseRedirest('/')
+        return HttpResponseRedirect('/')
 
     else:
         return HttpResponse('Nie zalogowano')
+
+def pagelogout(request):
+    if request.method == "POST":
+        logout(request)
+        return redirect('/')

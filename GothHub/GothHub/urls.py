@@ -17,14 +17,13 @@ from django.contrib import admin
 from django.urls import path, include
 from django.conf import settings
 from django.conf.urls.static import static
-import logowanie
-import upload
+import upload, logowanie
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('login/', include('logowanie.urls') ),
+    path('login/', include('logowanie.urls')),
     path('join/', logowanie.views.signup, name='join'),
-    path('', include('home.urls')),
+    path('logout/', logowanie.views.pagelogout, name='logout'),
     path('upload/', include('upload.urls')),
     path('download/', upload.views.file_list, name='download'),
 ]
