@@ -79,12 +79,20 @@ def edit_profile(request, username):
                 if username_form.is_valid():
                     update_username = username_form.cleaned_data.get('username')
                     logged_user.username = update_username
+                    logged_user.save()
+                    return HttpResponse('Zmieniono dane')
                 if password_form.is_valid():
-
-                    update_password = form.cleaned_data.get('new_password')
-                    logged_user.password = update_password
-                logged_user.save()
-                return HttpResponse('Zmieniono dane')
+                    password = password_form.cleaned_data.get('password')
+                    user = authenticate(username=logged_user.username, password=password)
+                    if user is not None:
+                        if password_form.clean_password2() is False:
+                            return HttpResponse('Podane hasła nie są takie same')
+                        update_password = password_form.cleaned_data.get('new_password1')
+                        logged_user.set_password(update_password)
+                        logged_user.save()
+                        return HttpResponse('Zmieniono dane')
+                    return HttpResponse('Podano niepoprawne hasło')
+                return HttpResponse('Błąd formularza')
             else:
                 username_form = EditUsernameForm()
                 password_form = EditPasswordForm()
