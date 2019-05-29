@@ -76,25 +76,30 @@ def edit_profile(request, username):
             if request.method == 'POST':
                 username_form = EditUsernameForm(request.POST)
                 password_form = EditPasswordForm(request.POST)
-                if username_form.is_valid():
-                    update_username = username_form.cleaned_data.get('username')
-                    logged_user.username = update_username
-                    logged_user.save()
-                    return HttpResponse('Zmieniono dane')
-                if password_form.is_valid():
-                    password = password_form.cleaned_data.get('password')
-                    user = authenticate(username=logged_user.username, password=password)
-                    if user is not None:
-                        if password_form.clean_password2() is False:
-                            return HttpResponse('Podane hasła nie są takie same')
-                        update_password = password_form.cleaned_data.get('new_password1')
-                        logged_user.set_password(update_password)
-                        logged_user.save()
-                        return HttpResponse('Zmieniono dane')
-                    return HttpResponse('Podano niepoprawne hasło')
-                return HttpResponse('Błąd formularza')
+                if 'change_username' in request.POST:
+                    if username_form.is_valid():
+                        update_username = username_form.cleaned_data.get('username')
+                        try:
+                            User.objects.get(username=update_username)
+                        except User.DoesNotExist:
+                            logged_user.username = update_username
+                            logged_user.save()
+                            return HttpResponse('Zmieniono dane')
+                        username_form.add_error('username', "Taki użytkownik istnieje")
+                    password_form = EditPasswordForm()
+                elif 'change_password' in request.POST:
+                    if password_form.is_valid():
+                        password = password_form.cleaned_data.get('password')
+                        user = authenticate(username=logged_user.username, password=password)
+                        if user is not None:
+                            update_password = password_form.cleaned_data.get('new_password1')
+                            logged_user.set_password(update_password)
+                            logged_user.save()
+                            return HttpResponse('Zmieniono dane')
+                        return HttpResponse('Podano niepoprawne hasło')
+                    username_form = EditUsernameForm(initial={'username':logged_user.username})
             else:
-                username_form = EditUsernameForm()
+                username_form = EditUsernameForm(initial={'username':logged_user.username})
                 password_form = EditPasswordForm()
             return render(request, 'logowanie/edit_profile.html', {'username_form':username_form,
                 'password_form':password_form, 'user':logged_user, 'repositories':repositories})
