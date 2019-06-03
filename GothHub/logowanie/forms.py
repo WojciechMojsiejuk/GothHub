@@ -21,7 +21,7 @@ class LoginForm(AuthenticationForm):
         fields = ('username', 'password')
 
 class EditUsernameForm(forms.Form):
-    username = forms.CharField(max_length=128, label="Nowa nazwa użytkownika")
+    username = forms.CharField(max_length=128, label="Nazwa użytkownika")
 
     class Meta:
         model = User
@@ -38,9 +38,9 @@ class EditPasswordForm(forms.Form):
     class Meta:
         model = User
 
-    def clean_password2(self):
+    def clean(self):
         password1 = self.cleaned_data.get("new_password1")
         password2 = self.cleaned_data.get("new_password2")
         if password1 and password2 and password1 != password2:
-            return False
-        return True
+            msg = "Podane hasła nie są takie same"
+            self.add_error('new_password2', msg)
