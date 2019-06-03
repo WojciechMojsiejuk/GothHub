@@ -33,6 +33,7 @@ ALLOWED_HOSTS = []
 # Application definition
 
 INSTALLED_APPS = [
+    'repository_statistics.apps.RepositoryStatisticsConfig',
     'logowanie.apps.LogowanieConfig',
     'home.apps.HomeConfig',
     'upload.apps.UploadConfig',

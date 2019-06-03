@@ -16,6 +16,7 @@ class SignUpForm(UserCreationForm):
             'username' : 'Nazwa użytkownika',
         }
 
+
 class LoginForm(AuthenticationForm):
     login = True
 
