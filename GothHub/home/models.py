@@ -1,4 +1,5 @@
 from django.db import models
+# TO DO: check this import
 from logowanie.models import User
 
 
@@ -21,7 +22,7 @@ class Catalog(models.Model):
 class File(models.Model):
     author = models.ForeignKey(User, on_delete=models.CASCADE)
     file_name = models.CharField(max_length=128)
-    extention = models.CharField(max_length=20)
+    extension = models.CharField(max_length=20)
     content = models.TextField()
     date_upload = models.DateField()
     repository_Id =  models.ForeignKey(Repository, on_delete=models.CASCADE)
