@@ -36,6 +36,7 @@ INSTALLED_APPS = [
     'logowanie.apps.LogowanieConfig',
     'home.apps.HomeConfig',
     'upload.apps.UploadConfig',
+    'captcha',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -129,3 +130,5 @@ STATIC_ROOT = os.path.join(BASE_DIR, 'static')
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 
 MEDIA_URL = '/media/'
+
+LOGIN_URL = 'login:index'

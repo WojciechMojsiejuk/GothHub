@@ -1,6 +1,8 @@
 from django.shortcuts import render
 from django.http import HttpResponseRedirect, Http404
 from django.contrib.auth.models import User
+from django.contrib.auth.decorators import login_required
+
 from .models import Repository, Catalog, File
 from .forms import RepoCreationForm,CatalogCreationForm
 
@@ -30,7 +32,7 @@ def user(request, username):
         'repositories_owner':repositories_owner})
 
 
-
+@login_required
 def add_repository(request, username):
     if request.user.is_authenticated:
         user = request.user
