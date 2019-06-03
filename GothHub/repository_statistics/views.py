@@ -24,18 +24,18 @@ def show_statistics(request):
     except Catalog.DoesNotExist:
         users_catalogs_count = 0
 
-    python_extensions_list = ProgrammingLanguage.objects.filter(name__exact='Python').values_list('extensions',
-                                                                                                  flat=True)
-    java_extensions_list = ProgrammingLanguage.objects.filter(name__exact='Java').values_list('extensions',
-                                                                                                  flat=True)
-    c_extensions_list = ProgrammingLanguage.objects.filter(name__exact='C').values_list('extensions',
-                                                                                                  flat=True)
-    cpp_extensions_list = ProgrammingLanguage.objects.filter(name__exact='C++').values_list('extensions',
-                                                                                                  flat=True)
-    chash_extensions_list = ProgrammingLanguage.objects.filter(name__exact='C#').values_list('extensions',
-                                                                                               flat=True)
-    other_extensions_list = ProgrammingLanguage.objects.filter(name__exact='Other').values_list('extensions',
-                                                                                               flat=True)
+    python_extensions_list = str(ProgrammingLanguage.objects.filter(name__exact='Python').values_list('extensions',
+                                                                                                  flat=True)).split(',')
+    java_extensions_list = str(ProgrammingLanguage.objects.filter(name__exact='Java').values_list('extensions',
+                                                                                                  flat=True)).split(',')
+    c_extensions_list = str(ProgrammingLanguage.objects.filter(name__exact='C').values_list('extensions',
+                                                                                                  flat=True)).split(',')
+    cpp_extensions_list = str(ProgrammingLanguage.objects.filter(name__exact='C++').values_list('extensions',
+                                                                                                  flat=True)).split(',')
+    chash_extensions_list = str(ProgrammingLanguage.objects.filter(name__exact='C#').values_list('extensions',
+                                                                                               flat=True)).split(',')
+    other_extensions_list = str(ProgrammingLanguage.objects.filter(name__exact='Other').values_list('extensions',
+                                                                                               flat=True)).split(',')
     try:
         python_users_files_count = File.objects.filter(author=user, extension__in=python_extensions_list).count()
     except File.DoesNotExist:
