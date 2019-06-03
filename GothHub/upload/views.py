@@ -24,18 +24,18 @@ def upload_file(request, username, repository, parental_catalog, catalog):
         catalog = Catalog.objects.get(
         name = catalog,
         repository_Id = repo,
-        parent_catalog = Catalog.objects.get(name = parental_catalog, repository_Id = repo, parent_catalog = null))
+        parent_catalog = Catalog.objects.get(name = parental_catalog, repository_Id = repo, parent_catalog = non))
     else:
-        catalog = Catalog.objects.get(name = catalog, repository_Id = repo, parent_catalog = null)
+        catalog = Catalog.objects.get(name = catalog, repository_Id = repo, parent_catalog = non)
     if request.method == 'POST':
         form = FileUploadForm(request.POST, request.FILES)
         if form.is_valid():
             dir = form.cleaned_data.get('dir')
             #date = str(datetime.datetime.now().date()) + ' ' + str(datetime.datetime.now().time())
             #print(date)
-            print(user)
+            #print(user)
             #print(dir)
-            print(repository)
+            #print(repository)
             #print(catalog_Id)
             File.objects.create(
             author = user,
