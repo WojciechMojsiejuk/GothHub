@@ -14,7 +14,7 @@ def show_statistics(request):
     except Repository.DoesNotExist:
         users_public_repositories_count = 0
     try:
-        users_private_repositories = Repository.objects.filter(owner=user, s_public=False)
+        users_private_repositories = Repository.objects.filter(owner=user, is_public=False)
         users_private_repositories_count = users_private_repositories.count()
     except Repository.DoesNotExist:
         users_private_repositories_count = 0

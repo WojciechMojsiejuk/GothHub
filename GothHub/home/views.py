@@ -7,6 +7,7 @@ from django.db import DatabaseError
 from django.contrib.auth.decorators import login_required
 from django.core.exceptions import ObjectDoesNotExist
 
+
 def home(request):
     if request.user.is_authenticated is True:
         logged_user = request.user

@@ -13,6 +13,7 @@ from .models import Profile
 from .forms import SignUpForm, LoginForm, EditUsernameForm, EditPasswordForm
 from .tokens import account_activation_token
 
+
 # Registering a user
 def signup(request):
     if request.method == 'POST':
@@ -34,6 +35,7 @@ def signup(request):
     else:
         form = SignUpForm()
     return render(request, 'logowanie/signup.html', {'form': form})
+
 
 # Basic login view
 def index(request):
@@ -68,6 +70,7 @@ def index(request):
     return render(request, 'logowanie/signup.html', {'form': form})
 
 # Users profile edition
+# TO DO: CHECK FORMS
 def edit_profile(request, username):
     if request.user.is_authenticated is True:
         logged_user = request.user
@@ -88,9 +91,10 @@ def edit_profile(request, username):
             else:
                 username_form = EditUsernameForm()
                 password_form = EditPasswordForm()
-            return render(request, 'logowanie/edit_profile.html', {'username_form':username_form,
-                'password_form':password_form, 'user':logged_user, 'repositories':repositories})
+            return render(request, 'logowanie/edit_profile.html', {'username_form': username_form,
+                'password_form': password_form, 'user': logged_user, 'repositories': repositories})
     return HttpResponseForbidden("Can only edit own profile")
+
 
 # Checks if activation token is correct, validates email
 def activate(request, uidb64, token):
@@ -109,6 +113,7 @@ def activate(request, uidb64, token):
 
     else:
         return HttpResponse('Nie zalogowano')
+
 
 def pagelogout(request):
     if request.method == "POST":
