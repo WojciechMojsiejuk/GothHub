@@ -17,7 +17,7 @@ from django.contrib import admin
 from django.urls import path, include
 from django.conf import settings
 from django.conf.urls.static import static
-import upload, logowanie
+import logowanie
 
 urlpatterns = [
     path('admin/', admin.site.urls),
@@ -25,7 +25,6 @@ urlpatterns = [
     path('join/', logowanie.views.signup, name='join'),
     path('logout/', logowanie.views.pagelogout, name='logout'),
     path('captcha/', include('captcha.urls')),
-    path('user/<str:username>/<str:repository>/<str:parental_catalog>/<str:catalog>/upload', include('upload.urls')),
     path('', include('home.urls'))
 ]
 

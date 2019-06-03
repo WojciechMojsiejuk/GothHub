@@ -1,5 +1,5 @@
 from django.shortcuts import render
-from django.http import HttpResponseRedirect, Http404
+from django.http import HttpResponseRedirect, Http404, HttpResponseForbidden
 from django.contrib.auth.models import User
 from django.contrib.auth.decorators import login_required
 
@@ -56,7 +56,8 @@ def add_repository(request, username):
 
 def repository(request, username, repository):
     if request.user.is_authenticated:
-        user = request.user
+        # TODO: check other users permissions
+        user = User.objects.get(username=username)
         searched_repository = Repository.objects.get(owner=user, name=repository)
         try:
             catalogs = Catalog.objects.filter(repository_Id=searched_repository)
@@ -81,16 +82,18 @@ def repository(request, username, repository):
     else:
         return HttpResponseRedirect('/')
 
-
+@login_required
 def delete_repository(request, username, repository):
+    # TODO: check other users permissions
     if request.user.is_authenticated:
-        user = request.user
-        # get list of repository catalogs
-        searched_repository = Repository.objects.get(owner=user, name=repository)
-        searched_repository.delete()
-    return HttpResponseRedirect('/')
+        user = User.objects.get(username=username)
+        if request.user is user:
+            # get list of repository catalogs
+            searched_repository = Repository.objects.get(owner=user, name=repository)
+            searched_repository.delete()
+    return HttpResponseForbidden('You are not authorized to delete this repository')
 
-
+@login_required
 def add_catalog(request, username, repository, parental_catalog):
     if request.user.is_authenticated:
         user = request.user

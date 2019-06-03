@@ -70,7 +70,7 @@ def index(request):
     return render(request, 'logowanie/signup.html', {'form': form})
 
 # Users profile edition
-# TO DO: CHECK FORMS
+# TODO: CHECK FORMS
 def edit_profile(request, username):
     if request.user.is_authenticated is True:
         logged_user = request.user

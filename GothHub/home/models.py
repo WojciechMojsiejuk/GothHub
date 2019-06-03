@@ -28,8 +28,8 @@ class File(models.Model):
     author = models.ForeignKey(User, on_delete=models.CASCADE)
     file_name = models.CharField(max_length=128)
     extension = models.CharField(max_length=20)
-    date_upload = models.DateTimeField(auto_now_add = True, blank = True)
-    repository_Id =  models.ForeignKey(Repository, on_delete=models.CASCADE)
+    date_upload = models.DateTimeField(auto_now_add=True, blank=True)
+    repository_Id = models.ForeignKey(Repository, on_delete=models.CASCADE)
     catalog_Id = models.ForeignKey(Catalog, on_delete=models.CASCADE)
     dir = models.FileField(upload_to='files/')
 
