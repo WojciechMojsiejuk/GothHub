@@ -22,10 +22,11 @@ class File(models.Model):
     author = models.ForeignKey(User, on_delete=models.CASCADE)
     file_name = models.CharField(max_length=128)
     extention = models.CharField(max_length=20)
-    content = models.TextField()
-    date_upload = models.DateField()
+    #content = models.TextField()
+    date_upload = models.DateTimeField(auto_now_add = True, blank = True)
     repository_Id =  models.ForeignKey(Repository, on_delete=models.CASCADE)
     catalog_Id = models.ForeignKey(Catalog, on_delete=models.CASCADE)
+    dir = models.FileField(upload_to='files/')
 
 class Version(models.Model):
     file_Id = models.ForeignKey(File, on_delete=models.CASCADE)

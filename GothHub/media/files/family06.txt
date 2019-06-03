@@ -1,0 +1,143 @@
+% file: untitled.pl
+
+%chosen ones
+person(alfred,male).
+person(ann,female).
+person(david,male).
+person(elisa,female).
+person(eric,male).
+person(fannie,female).
+person(fred,male).
+person(james,male).
+
+person(terry,male).
+person(umo,male).
+person(wendy,female).
+person(walt,male).
+person(art,male).
+person(alice,female).
+person(cornelia,female).
+person(george,male).
+person(harry,male).
+person(kari,female).
+person(nero,male).
+person(nancy,female).
+person(neil,male).
+person(peter,male).
+person(frederick,male).
+person(jane,female).
+person(jack,male).
+person(calvin,male).
+person(angela,female).
+person(callie,female).
+person(lorrie,female).
+person(leon,male).
+person(mark,male).
+person(martha,female).
+person(oma,female).
+person(owen,male).
+person(paul,male).
+person(paula,female).
+person(rachel,female).
+person(susan,female).
+person(steve,male).
+person(ray,male).
+person(jonas,male).
+
+parent(ann,elisa).
+parent(beatrice,eric).
+parent(beatrice,fannie).
+parent(callie,karl).
+parent(kari,janet).
+parent(kari,nero).
+parent(lorrie,paul).
+parent(martha,susan).
+parent(deanna,terry).
+parent(elisa,wendy).
+parent(fannie,cornelia).
+parent(helen,prissie).
+parent(helen,jane).
+parent(janet,jack).
+parent(janet,calvin).
+parent(janet,christy).
+parent(nonnie,angela).
+parent(helen,frederick).
+parent(bob,fannie).
+parent(carl,karl).
+parent(carl,lorrie).
+parent(carl,mark).
+parent(karl,janet).
+parent(karl,nero).
+parent(leon,oma).
+parent(leon,paul).
+parent(leon,rachel).
+parent(mark,susan).
+parent(david,jonas).
+parent(david,terry).
+parent(eric,umo).
+parent(eric,wendy).
+parent(eric,art).
+parent(fred,cornelia).
+parent(fred,nancy).
+parent(harry,jane).
+parent(james,calvin).
+parent(james,christy).
+parent(nero,angela).
+parent(nero,ray).
+parent(harry,frederick).
+
+married(ann,alfred).
+married(beatrice,bob).
+married(callie,carl).
+married(deanna,david).
+married(elisa,eric).
+married(fannie,fred).
+married(kari,karl).
+married(lorrie,leon).
+married(susan,steve).
+married(terri,terry).
+married(wendy,walt).
+married(alice,art).
+married(maria,melvin).
+married(nancy,neil).
+married(prissie,peter).
+married(jane,jack).
+married(christy,carlos).
+married(regina,ray).
+
+ojciec(X, Y)<-person(X,male)&parent(X,Y).
+matka(X, Y)<-person(X,female)&parent(X,Y).
+maz(X, Y)<-person(X,male)&married(X,Y).
+maz(X, Y)<-person(X,male)&married(Y,X).
+zona(X, Y)<-person(X,female)&married(X,Y).
+zona(X, Y)<-person(X,female)&married(Y,X).
+syn(X, Y)<-person(X,male)&parent(Y,X).
+corka(X, Y)<-person(X,female)&parent(Y,X).
+brat(X,Y)<-person(X,male)&parent(Z,X)&parent(Z,Y).
+siostra(X,Y)<-person(X,female)&parent(Z,X)&parent(Z,Y).
+
+wujek(X, Y)<-person(X, male) & parent(Z,Y) & brat(Z,X).
+ciocia(X, Y)<-siostra(X,Z)&parent(Z,Y).
+%ciocia(X, Y)<-person(X, female) & parent(Z,Y) & siostra(Z,X).
+babcia(X, Y)<-person(X, female) & parent(X,Z) & parent(Z,Y).
+dziadek(X, Y)<-person(X, male) & parent(X,Z) & parent(Z,Y).
+
+wnuczka(X, Y)<-person(X,female)&babcia(Y,X).
+wnuczka(X, Y)<-person(X,female)&dziadek(Z,X).
+%wnuczka(X)<-person(X,female)&dziadek(Y,X).
+ojciecwujek(X)<-ojciec(X,Y)&wujek(X,Z).
+ciotkaniematka(X)<-ciocia(X,Z)&~matka(X,Y).
+rodzenstwo(X,Y)<-brat(X,Y).
+rodzenstwo(X,Y)<-siostra(X,Y).
+brakdzieci(X,Y)<-married(X,Y)&~parent(X,Z)&~parent(Y,Z).
+
+%f
+zwiazeklubrodzenstwo(X)<-married(X,Y).
+zwiazeklubrodzenstwo(X)<-rodzenstwo(X,Y)&married(Y,Z).
+
+prababcia(X)<-babcia(X,Y)&parrent(Y,Z).
+pradziadek(X)<-dziadek(X,Y)&parrent(Y,Z).
+dziedekbezrodzenstw(X)<-dziadek(X, Y)&~rodzenstwo(X,Z).
+kobietymatki(X)<-person(X,female)&matka(X, Y).
+facetojciec(X)<-person(X,male)&ojciec(X, Y).
+niedziadekojciecwujek(X)<-~dziadek(X, Y)&~ojciec(X, Z)&~wujek(X, Z).

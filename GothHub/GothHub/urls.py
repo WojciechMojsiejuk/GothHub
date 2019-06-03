@@ -24,9 +24,9 @@ urlpatterns = [
     path('login/', include('logowanie.urls')),
     path('join/', logowanie.views.signup, name='join'),
     path('logout/', logowanie.views.pagelogout, name='logout'),
-    path('upload/', include('upload.urls')),
     path('captcha/', include('captcha.urls')),
-    path('', include('home.urls')),
+    path('user/<str:username>/<str:repository>/<str:parental_catalog>/<str:catalog>/upload', include('upload.urls')),
+    path('', include('home.urls'))
 ]
 
 if settings.DEBUG:
