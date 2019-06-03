@@ -35,26 +35,24 @@ def user(request, username):
 
 @login_required
 def add_repository(request, username):
-    if request.user.is_authenticated:
-        try:
-            user = User.objects.get(username=username)
-        except User.DoesNotExist:
-            raise Http404("User does not exist")
-        if request.user is user:
-            if request.method == 'POST':
-                form = RepoCreationForm(request.POST)
-                if form.is_valid():
-                    name = form.cleaned_data.get('name')
-                    is_public = form.cleaned_data.get('is_public')
-                    Repository.objects.create(name=name, is_public=is_public, owner=user)
-                    return HttpResponseRedirect('/')
-            else:
-                form = RepoCreationForm()
-                repositories = Repository.objects.filter(owner=user)
-            return render(request, 'repository.html', {'form': form})
+    try:
+        user = User.objects.get(username=username)
+    except User.DoesNotExist:
+        raise Http404("User does not exist")
+    if request.user == user:
+        if request.method == 'POST':
+            form = RepoCreationForm(request.POST)
+            if form.is_valid():
+                name = form.cleaned_data.get('name')
+                is_public = form.cleaned_data.get('is_public')
+                Repository.objects.create(name=name, is_public=is_public, owner=user)
+                return HttpResponseRedirect('/')
         else:
-            return HttpResponseForbidden('You are not authorized to add repository')
-    return HttpResponse('Unauthorized', status=401)
+            form = RepoCreationForm()
+            repositories = Repository.objects.filter(owner=user)
+        return render(request, 'repository.html', {'form': form})
+    else:
+        return HttpResponseForbidden('You are not authorized to add repository')
 
 
 def repository(request, username, repository):
@@ -93,62 +91,59 @@ def repository(request, username, repository):
 @login_required
 def delete_repository(request, username, repository):
     # TODO: check other users permissions
-    if request.user.is_authenticated:
-        try:
-            user = User.objects.get(username=username)
-        except User.DoesNotExist:
-            raise Http404("User does not exist")
+    try:
+        user = User.objects.get(username=username)
+    except User.DoesNotExist:
+        raise Http404("User does not exist")
 
-        if request.user is user:
-            # get list of repository catalogs
-            searched_repository = Repository.objects.get(owner=user, name=repository)
-            searched_repository.delete()
+    if request.user == user:
+        # get list of repository catalogs
+        searched_repository = Repository.objects.get(owner=user, name=repository)
+        searched_repository.delete()
     return HttpResponseForbidden('You are not authorized to delete this repository')
 
 @login_required
 def add_catalog(request, username, repository, parental_catalog):
-    if request.user.is_authenticated:
-        try:
-            user = User.objects.get(username=username)
-        except User.DoesNotExist:
-            raise Http404("User does not exist")
-        if request.user is user:
-            if request.method == 'POST':
-                form = CatalogCreationForm(request.POST)
-                if form.is_valid():
-                    name = form.cleaned_data.get('name')
-                    searched_repository = Repository.objects.get(owner=user, name=repository)
-                    try:
-                        Catalog.objects.get(name=name, repository_Id=searched_repository)
-                        return render(request, 'catalog.html', {
-                            'form': form,
-                            'error_message': 'Nie można dodać katalogu o takiej nazwie, istnieje już w danej przestrzeni'
-                        })
-                    except Catalog.DoesNotExist:
-                        pass
-                    if parental_catalog == 'None':
-                        Catalog.objects.create(name=name, repository_Id=searched_repository, parent_catalog=None)
-                        return HttpResponseRedirect('/user/' + str(user) + "/" + str(searched_repository.name))
-                    else:
-                        searched_parental_catalog = Catalog.objects.get(
-                            name=parental_catalog,
-                            repository_Id=searched_repository
-                        )
-                        Catalog.objects.create(
-                            name=name,
-                            repository_Id=searched_repository,
-                            parent_catalog=searched_parental_catalog
-                        )
-                        return HttpResponseRedirect('/user/' + str(user) + "/" + str(searched_repository.name) + "/" + str(
-                            searched_parental_catalog.name))
-            else:
-                form = CatalogCreationForm()
-            return render(request, 'catalog.html', {'form': form})
+    try:
+        user = User.objects.get(username=username)
+    except User.DoesNotExist:
+        raise Http404("User does not exist")
+    if request.user == user:
+        if request.method == 'POST':
+            form = CatalogCreationForm(request.POST)
+            if form.is_valid():
+                name = form.cleaned_data.get('name')
+                searched_repository = Repository.objects.get(owner=user, name=repository)
+                try:
+                    Catalog.objects.get(name=name, repository_Id=searched_repository)
+                    return render(request, 'catalog.html', {
+                        'form': form,
+                        'error_message': 'Nie można dodać katalogu o takiej nazwie, istnieje już w danej przestrzeni'
+                    })
+                except Catalog.DoesNotExist:
+                    pass
+                if parental_catalog == 'None':
+                    Catalog.objects.create(name=name, repository_Id=searched_repository, parent_catalog=None)
+                    return HttpResponseRedirect('/user/' + str(user) + "/" + str(searched_repository.name))
+                else:
+                    searched_parental_catalog = Catalog.objects.get(
+                        name=parental_catalog,
+                        repository_Id=searched_repository
+                    )
+                    Catalog.objects.create(
+                        name=name,
+                        repository_Id=searched_repository,
+                        parent_catalog=searched_parental_catalog
+                    )
+                    return HttpResponseRedirect('/user/' + str(user) + "/" + str(searched_repository.name) + "/" + str(
+                        searched_parental_catalog.name))
         else:
-            HttpResponseForbidden('You are not authorized to add catalog')
-    return HttpResponse('Unauthorized', status=401)
+            form = CatalogCreationForm()
+        return render(request, 'catalog.html', {'form': form})
+    else:
+        HttpResponseForbidden('You are not authorized to add catalog')
 
-
+# NEEDS change login not required and private repos visible only to owner
 def catalogs_and_files(request, username, repository, parental_catalog):
     if request.user.is_authenticated:
         try:
@@ -185,34 +180,32 @@ def catalogs_and_files(request, username, repository, parental_catalog):
 
 @login_required
 def delete_catalog(request, username, repository, parental_catalog, catalog):
-    if request.user.is_authenticated:
+    try:
+        user = User.objects.get(username=username)
+    except User.DoesNotExist:
+        raise Http404("User does not exist")
+    if request.user == user:
         try:
-            user = User.objects.get(username=username)
-        except User.DoesNotExist:
-            raise Http404("User does not exist")
-        if request.user is user:
-            try:
-                searched_repository = Repository.objects.get(owner=user, name=repository)
-            except Repository.DoesNotExist:
-                raise Http404("Repository does not exist")
-            try:
-                searched_parental_catalog = Catalog.objects.get(
-                    name=parental_catalog,
-                    repository_Id=searched_repository
-                )
-            except Catalog.DoesNotExist:
-                searched_parental_catalog = None
-            try:
-                searched_catalog = Catalog.objects.get(name=catalog, repository_Id=searched_repository,
-                                                       parent_catalog=searched_parental_catalog)
-            except Catalog.DoesNotExist:
-                raise Http404("Catalog does not exist")
-            searched_catalog.delete()
-            if searched_parental_catalog is None:
-                return HttpResponseRedirect('/user/' + str(user) + "/" + str(searched_repository.name))
-            else:
-                return HttpResponseRedirect(
-                    '/user/' + str(user) + "/" + str(searched_repository.name) + "/" + str(searched_parental_catalog.name))
+            searched_repository = Repository.objects.get(owner=user, name=repository)
+        except Repository.DoesNotExist:
+            raise Http404("Repository does not exist")
+        try:
+            searched_parental_catalog = Catalog.objects.get(
+                name=parental_catalog,
+                repository_Id=searched_repository
+            )
+        except Catalog.DoesNotExist:
+            searched_parental_catalog = None
+        try:
+            searched_catalog = Catalog.objects.get(name=catalog, repository_Id=searched_repository,
+                                                   parent_catalog=searched_parental_catalog)
+        except Catalog.DoesNotExist:
+            raise Http404("Catalog does not exist")
+        searched_catalog.delete()
+        if searched_parental_catalog is None:
+            return HttpResponseRedirect('/user/' + str(user) + "/" + str(searched_repository.name))
         else:
-            return HttpResponse('Unauthorized', status=401)
-    return HttpResponse('Unauthorized', status=401)
+            return HttpResponseRedirect(
+                '/user/' + str(user) + "/" + str(searched_repository.name) + "/" + str(searched_parental_catalog.name))
+    else:
+        return HttpResponse('Unauthorized', status=401)
