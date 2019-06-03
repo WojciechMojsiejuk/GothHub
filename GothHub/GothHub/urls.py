@@ -24,7 +24,7 @@ urlpatterns = [
     path('login/', include('logowanie.urls')),
     path('join/', logowanie.views.signup, name='join'),
     path('logout/', logowanie.views.pagelogout, name='logout'),
-    path('upload/', include('upload.urls')),
+    path('', include('upload.urls')),
     path('', include('home.urls')),
 ]
 

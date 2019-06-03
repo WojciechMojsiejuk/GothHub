@@ -1,6 +1,6 @@
 from django import forms
 
-from .models import Repository, Catalog
+from .models import Repository, Catalog, File
 
 class RepoCreationForm(forms.Form):
     name = forms.CharField(max_length=128)
@@ -16,3 +16,10 @@ class CatalogCreationForm(forms.Form):
     class Meta:
         model = Catalog
         fields=('name')
+
+class FileUploadForm(forms.ModelForm):
+    #name = forms.CharField(max_length=128)
+
+    class Meta:
+        model = File
+        fields=('dir', )

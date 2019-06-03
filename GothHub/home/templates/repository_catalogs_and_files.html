@@ -30,8 +30,13 @@
           <button class="button4" type="submit" value="usun">Usun</button>
         {% endfor %}
       {% endif %}
-      <form method="get" action="/upload">
+      {% if parent_catalog.name == None %}
+      <form method="get" action="/user/{{ request.user.username }}/{{ repository.name }}/None/{{ catalog.name }}/upload">
         <button class="button2" type="submit" value="dodajPlik">Dodaj plik</button>
+        {% else %}
+        <form method="get" action="/user/{{ request.user.username }}/{{ repository.name }}/{{ parent_catalog.name }}/{{ catalog.name }}/upload">
+          <button class="button2" type="submit" value="dodajPlik">Dodaj plik</button>
+      {% endif %}
       </form>
       {% if parent_catalog.name == None %}
         <form method="get" action="/user/{{ request.user.username }}/{{ repository.name }}/None/add_catalog">
