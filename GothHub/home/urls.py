@@ -13,8 +13,9 @@ urlpatterns = [
     path('statistics', include('repository_statistics.urls')),
     path('user/<str:username>/<str:repository>', views.repository, name='repository'),
     path('user/<str:username>/<str:repository>/delete_repository', views.delete_repository, name='delete_repository'),
-    path('user/<str:username>/<str:repository>/<str:parental_catalog>/add_catalog', views.add_catalog, name='add_catalog'),
-    path('user/<str:username>/<str:repository>/<str:parental_catalog>', views.catalogs_and_files, name='catalogs_and_files'),
     path('user/<str:username>/<str:repository>/<str:parental_catalog>/<str:catalog>/upload', include('upload.urls')),
-    path('user/<str:username>/<str:repository>/<str:parental_catalog>/<str:catalog>/delete_catalog', views.delete_catalog, name='delete_catalog')
+    path('user/<str:username>/<str:repository>/add_catalog', views.add_catalog, name='add_catalog'),
+    path('user/<str:username>/<str:repository>/<path:path>/add_catalog', views.add_catalog, name='add_catalog'),
+    path('user/<str:username>/<str:repository>/<path:path>/delete_catalog', views.delete_catalog, name='delete_catalog'),
+    path('user/<str:username>/<str:repository>/<path:path>', views.catalogs_and_files, name='catalogs_and_files')
 ]

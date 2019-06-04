@@ -10,7 +10,7 @@
     <h1>Catalogs:</h1>
       {% if catalogs is not None %}
         {% for catalog in catalogs %}
-          <h2>{{ catalog.name }}</h2>
+          <a href="{{ repository.name }}/{{ catalog.name }}"><h2>{{ catalog.name }}</h2></a>
           <button class="button3" type="submit" value="edytuj">Edytuj</button>
           {% if parent_catalog.name == None %}
             <form method="get" action="/user/{{ request.user.username }}/{{ repository.name }}/None/{{catalog.name}}/delete_catalog">
