@@ -10,7 +10,7 @@ import os
 def upload_file(request, username, repository, parental_catalog, catalog):
     user = request.user
     repo = Repository.objects.get(owner=user, name=repository)
-    if parental_catalog is None:
+    if parental_catalog is not None:
         catalog = Catalog.objects.get(
             name=catalog,
             repository_Id=repo,
