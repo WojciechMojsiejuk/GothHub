@@ -36,10 +36,15 @@ def upload_file(request, username, repository, path):
         form = FileUploadForm(request.POST, request.FILES)
         if form.is_valid():
             dir = form.cleaned_data.get('dir')
-            ex = os.path.splitext(dir)[1]
+            ex = os.path.splitext(str(dir))[1]
             ex = ex.lstrip('.')
-            allowed_extensions = str(ProgrammingLanguage.objects.all().values_list('extensions', flat=True)).split(',')
+            allowed_extensions_list = list(ProgrammingLanguage.objects.all().values_list('extensions', flat=True))
+            allowed_extensions = []
+            allowed_extensions.append([str(i).split(',') for i in allowed_extensions_list])
+            print(ex)
+            print(allowed_extensions)
             if ex in allowed_extensions:
+                print('kurea')
                 uploaded_file = File.objects.create(
                     author=user,
                     file_name=dir,
@@ -48,30 +53,30 @@ def upload_file(request, username, repository, path):
                     catalog_Id=catalog,
                 )
 
-            try:
-                previous_file = File.objects.get(file_name=dir, author=user, repository_Id=repo, catalog_Id=catalog)
-                latest_version = Version.objects.get(file_Id=previous_file).values('version_nr')
-                Version.objects.create(
-                    file_Id=uploaded_file,
-                    version_nr=latest_version['version_nr'] + 1,
-                )
-
-            except File.DoesNotExist:
-                Version.objects.create(
-                    file_Id=uploaded_file,
-                    version_nr=1,
-                )
-                return redirect('download')
-            except MultipleObjectsReturned:
                 try:
-                    older_files = File.objects.filter(file_name=dir, author=user, repository_Id=repo, catalog_Id=catalog)
-                    latest_version = Version.objects.get(file_Id=older_files).values('version_nr').latest('version_nr')
+                    previous_file = File.objects.get(file_name=dir, author=user, repository_Id=repo, catalog_Id=parental_catalog)
+                    latest_version = Version.objects.get(file_Id=previous_file).values('version_nr')
                     Version.objects.create(
                         file_Id=uploaded_file,
                         version_nr=latest_version['version_nr'] + 1,
                     )
+
                 except File.DoesNotExist:
-                    return HttpResponse('Internal Server Error', status=500)
+                    Version.objects.create(
+                        file_Id=uploaded_file,
+                        version_nr=1,
+                    )
+                    return redirect('download')
+                except MultipleObjectsReturned:
+                    try:
+                        older_files = File.objects.filter(file_name=dir, author=user, repository_Id=repo, catalog_Id=parental_catalog)
+                        latest_version = Version.objects.get(file_Id=older_files).values('version_nr').latest('version_nr')
+                        Version.objects.create(
+                            file_Id=uploaded_file,
+                            version_nr=latest_version['version_nr'] + 1,
+                        )
+                    except File.DoesNotExist:
+                        return HttpResponse('Internal Server Error', status=500)
             else:
                 return HttpResponse('Bad extension', status=406)
     else:
