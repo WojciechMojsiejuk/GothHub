@@ -40,7 +40,8 @@ def upload_file(request, username, repository, path):
             ex = ex.lstrip('.')
             allowed_extensions_list = list(ProgrammingLanguage.objects.all().values_list('extensions', flat=True))
             allowed_extensions = []
-            allowed_extensions.append([str(i).split(',') for i in allowed_extensions_list])
+            for i in allowed_extensions_list:
+                allowed_extensions.extend(str(i).split(','))
             print(ex)
             print(allowed_extensions)
             if ex in allowed_extensions:
@@ -50,7 +51,7 @@ def upload_file(request, username, repository, path):
                     file_name=dir,
                     extension=ex,
                     repository_Id=repo,
-                    catalog_Id=catalog,
+                    catalog_Id=parental_catalog,
                 )
 
                 try:

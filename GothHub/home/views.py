@@ -52,39 +52,42 @@ def add_repository(request, username):
     else:
         return HttpResponseForbidden('You are not authorized to add repository')
 
-# TODO not listing child catalogs
 def repository(request, username, repository):
-    if request.user.is_authenticated:
-        # TODO: check other users permissions
-        try:
-            user = User.objects.get(username=username)
-        except User.DoesNotExist:
-            raise Http404("User does not exist")
+    try:
+        user = User.objects.get(username=username)
+    except User.DoesNotExist:
+        raise Http404("User does not exist")
+    if request.user == user:
         try:
             searched_repository = Repository.objects.get(owner=user, name=repository)
         except Repository.DoesNotExist:
             raise Http404("Repository does not exist")
+    else:
         try:
-            catalogs = Catalog.objects.filter(repository_Id=searched_repository)
-        except Catalog.DoesNotExist:
-            catalogs = None
-        searched_parental_catalog = None
-        try:
-            files = File.objects.filter(
-                author=user,
-                repository_Id=searched_repository,
-                catalog_Id=searched_parental_catalog
-            )
-        except File.DoesNotExist:
-            files = None
-        return render(request, 'repository_catalogs_and_files.html',
-                      {
-                          'username': user,
-                          'repository': searched_repository,
-                          'parent_catalog': searched_parental_catalog,
-                          'catalogs': catalogs, 'files': files
-                      })
-    return HttpResponse('Unauthorized', status=401)
+            searched_repository = Repository.objects.get(owner=user, name=repository, is_public=True)
+        except Repository.DoesNotExist:
+            raise Http404("Repository does not exist or is not public")
+
+    try:
+        catalogs = Catalog.objects.filter(repository_Id=searched_repository, parent_catalog=None)
+    except Catalog.DoesNotExist:
+        catalogs = None
+    searched_parental_catalog = None
+    try:
+        files = File.objects.filter(
+            author=user,
+            repository_Id=searched_repository,
+            catalog_Id=searched_parental_catalog
+        )
+    except File.DoesNotExist:
+        files = None
+    return render(request, 'repository_catalogs_and_files.html',
+                  {
+                      'username': user,
+                      'repository': searched_repository,
+                      'parent_catalog': searched_parental_catalog,
+                      'catalogs': catalogs, 'files': files
+                  })
 
 @login_required
 def delete_repository(request, username, repository):
