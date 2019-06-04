@@ -23,54 +23,65 @@
             <span class="icon-bar"></span>
             <span class="icon-bar"></span>
           </button>
-          <a class="navbar-brand" href="#">GothHub</a>
+          <a class="navbar-brand" href="/">GothHub</a>
         </div>
-
-        <!-- Grupowanie elementów menu w celu lepszego wyświetlania na urządzeniach moblinych -->
+        <!-- jak uzytkownik zalogowany -->
         <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-3">
+          <!-- lewa strona menu -->
           <ul class="nav navbar-nav">
 
-            <li class="active"><a href="#">Link</a></li>
-            <li><a href="#">Link</a></li>
+            <li><a href="#">O nas</a></li>
+
+            <li><a href="#">Statystyki</a></li>
+
             <li class="dropdown">
               <a href="#" class="dropdown-toggle" data-toggle="dropdown">Moje repozytoria <span class="caret"></span></a>
               <ul class="dropdown-menu" role="menu">
-                <li><a href="#">Akcja</a></li>
-                <li><a href="#">Inna akcja</a></li>
-                <li><a href="#">Coś jeszcze innego</a></li>
-                <li class="divider"></li>
-                <li><a href="#">Oddzielone linki</a></li>
-                <li class="divider"></li>
-                <li><a href="#">Jeszcze jeden oddzielony link</a></li>
-                <li class="divider"></li>
-                <li><a href="#">Jeszcze jeden oddzielony link</a></li>
+                {% if repositories is not None %}
+                  {% for repository in repositories %}
+                    <!--<li class="divider"></li>-->
+                    <li><a href="/user/{{ request.user.username }}/{{ repository.name }}">{{ repository.name }}</a></li>
+                    <!--<p>{{ repository.is_public }}</p>-->
+                  {% endfor %}
+                {% endif %}
               </ul>
             </li>
+            <form class="navbar-form navbar-left" method="get" action="/user/{{ user.username }}/add_repository">
+               <button type="submit" class="btn btn-defaul" value="dodajRepozytorium">Dodaj repozytorium</button>
+            </form>
           </ul>
-          <form class="navbar-form navbar-left" role="search">
-            <div class="form-group">
-              <input type="text" class="form-control" placeholder="Szukaj">
-            </div>
-            <button type="submit" class="btn btn-default">Wyślij</button>
-          </form>
+
+
+
           <ul class="nav navbar-nav navbar-right">
+            <!-- prawa strona menu -->
+            <li><a class="username" href="/user/{{ request.user.username }}">{{ request.user.username }}</a></li>
 
-            <li> <a class="username" href="/user/{{ request.user.username }}">Witaj, {{ request.user.username }} !</a></li>
+            <li class="dropdown">
+                <a href="#" class="dropdown-toggle" data-toggle="dropdown">
+                    <span class="glyphicon glyphicon-user"></span> 
+                      <!--{{ request.user.username }}-->
+                    <span class="glyphicon glyphicon-chevron-down"></span>
+                </a>
+                <ul class="dropdown-menu" role="menu">
+                    <li>
+                      <!-- dodac tu funkcje edycji -->
+                      <form class="navbar-form navbar-center">
+                        <button type="submit" class="btn btn-default" value="edytujProfil">Edytuj profil</button>
+                      </form>
 
-            <form class="navbar-form navbar-left">
-              <button type="submit" class="btn btn-default" value="edytujProfil">Edytuj profil</button>
-            </form>
+                      <form class="navbar-form navbar-center" method="post" action="/logout/">
+                        <button type="submit" class="btn btn-default">Wyloguj</button>
+                        {% csrf_token %}
+                      </form>
 
-            <form class="navbar-form navbar-left" method="post" action="/logout/">
-              <button type="submit" class="btn btn-default">Wyloguj</button>
-              {% csrf_token %}
-            </form>
-
-
-
+                    </li>
+                </ul>
+            </li>
           </ul>
-        </div>
       </div>
+    </div>
+
     </nav>
 
 
@@ -79,14 +90,7 @@
 
         {% if request.user.is_authenticated %}
           <!-- w tym ifie wyświetlają się wszystkie rzeczy, ktre powinien widzieć zalogowany użytkownik -->
-          <p>Witaj, <a class="username" href="/user/{{ request.user.username }}">{{ request.user.username }}</a>!</p>
-          <br/>
 
-          <button type="submit" class="button1"  value="edytujProfil">Edytuj profil</button>
-
-         <form method="get" action="/user/{{ user.username }}/add_repository">
-            <button type="submit" class="button1" value="dodajRepozytorium">Dodaj repozytorium</button>
-          </form>
           {% if repositories is not None %}
             {% for repository in repositories %}
               <a href="/user/{{ request.user.username }}/{{ repository.name }}"><h2>{{ repository.name }}</h2></a>
