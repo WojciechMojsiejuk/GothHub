@@ -2,6 +2,8 @@ from django.shortcuts import render, redirect
 from django.core.files.storage import FileSystemStorage
 from home.forms import FileUploadForm
 from home.models import File, Repository, Catalog
+from django.http import HttpResponse
+from repository_statistics.models import ProgrammingLanguage
 
 import os
 
@@ -15,19 +17,26 @@ def upload_file(request, username, repository, parental_catalog, catalog):
             parent_catalog=Catalog.objects.get(name=parental_catalog, repository_Id=repo))
     else:
         catalog = Catalog.objects.get(name=catalog, repository_Id=repo, parent_catalog=None)
-        
+
     if request.method == 'POST':
         form = FileUploadForm(request.POST, request.FILES)
         if form.is_valid():
             dir = form.cleaned_data.get('dir')
-            File.objects.create(
-                author=user,
-                file_name=dir,
-                extension= os.path.splitext(dir)[1],
-                repository_Id=repo,
-                catalog_Id=catalog,
-            )
-            return redirect('download')
+            ex = os.path.splitext(dir)[1]
+            ex = ex.lstrip('.')
+            allowed_extensions = str(ProgrammingLanguage.objects.all().values_list('extensions',flat=True)).split(',')
+            if ex in allowed_extensions:
+                File.objects.create(
+                    author=user,
+                    file_name=dir,
+                    extension= ex,
+                    repository_Id=repo,
+                    catalog_Id=catalog,
+                )
+                return redirect('download')
+
+            else:
+                return HttpResponse('Bad extension', status = 406)
     else:
         form = FileUploadForm()
     return render(request, 'upload.html', {'form': form})
