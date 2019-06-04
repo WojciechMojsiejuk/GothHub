@@ -3,6 +3,7 @@ from django.core.files.storage import FileSystemStorage
 from home.forms import FileUploadForm
 from home.models import File, Repository, Catalog
 
+import os
 
 def upload_file(request, username, repository, parental_catalog, catalog):
     user = request.user
@@ -14,6 +15,7 @@ def upload_file(request, username, repository, parental_catalog, catalog):
             parent_catalog=Catalog.objects.get(name=parental_catalog, repository_Id=repo))
     else:
         catalog = Catalog.objects.get(name=catalog, repository_Id=repo, parent_catalog=None)
+        
     if request.method == 'POST':
         form = FileUploadForm(request.POST, request.FILES)
         if form.is_valid():
@@ -21,7 +23,7 @@ def upload_file(request, username, repository, parental_catalog, catalog):
             File.objects.create(
                 author=user,
                 file_name=dir,
-                # extension=
+                extension= os.path.splitext(dir)[1],
                 repository_Id=repo,
                 catalog_Id=catalog,
             )
