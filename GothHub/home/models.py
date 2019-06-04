@@ -36,6 +36,5 @@ class File(models.Model):
 
 class Version(models.Model):
     file_Id = models.ForeignKey(File, on_delete=models.CASCADE)
-    version_nr = models.CharField(max_length=30)
-    changes = models.TextField()
-    date_modified: models.DateField()
+    version_nr = models.IntegerField()
+    date_modified: models.DateTimeField(auto_now_add=True, blank=True)

@@ -17,11 +17,11 @@ class CatalogCreationForm(forms.Form):
 
     class Meta:
         model = Catalog
-        fields=('name')
+        fields = ('name')
 
 class FileUploadForm(forms.ModelForm):
     name = forms.CharField(max_length=128)
 
     class Meta:
         model = File
-        fields=('dir', 'name')
+        fields = ('dir', )
