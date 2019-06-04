@@ -33,6 +33,21 @@ def upload_file(request, username, repository, parental_catalog, catalog):
                     repository_Id=repo,
                     catalog_Id=catalog,
                 )
+
+            try:
+                older_files = File.objects.filter(file_name=dir, author=user, repository_Id=repo, catalog_Id=catalog
+                latest_version = Version.objects.get(file_Id__in=older_files).latest('version_nr')
+                Version.objects.create(
+                file_Id = uploaded_file,
+                version_nr = latest_version+1,
+                )
+
+            except File.DoesNotExist:
+                older_files=None
+                Version.objects.create(
+                file_Id = uploaded_file,
+                version_nr = 1,
+                )
                 return redirect('download')
 
             else:
