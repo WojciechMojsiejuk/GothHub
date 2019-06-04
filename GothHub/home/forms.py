@@ -20,8 +20,8 @@ class CatalogCreationForm(forms.Form):
         fields=('name')
 
 class FileUploadForm(forms.ModelForm):
-    #name = forms.CharField(max_length=128)
+    name = forms.CharField(max_length=128)
 
     class Meta:
         model = File
-        fields=('dir', )
+        fields=('dir', 'name')

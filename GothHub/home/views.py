@@ -52,7 +52,7 @@ def add_repository(request, username):
     else:
         return HttpResponseForbidden('You are not authorized to add repository')
 
-
+# TODO not listing child catalogs
 def repository(request, username, repository):
     if request.user.is_authenticated:
         # TODO: check other users permissions
@@ -97,6 +97,7 @@ def delete_repository(request, username, repository):
     if request.user == user:
         searched_repository = Repository.objects.get(owner=user, name=repository)
         searched_repository.delete()
+        return HttpResponseRedirect('/')
     return HttpResponseForbidden('You are not authorized to delete this repository')
 
 @login_required
@@ -198,7 +199,7 @@ def catalogs_and_files(request, username, repository, path):
     })
 
 @login_required
-def delete_catalog(request, username, repository, parental_catalog, catalog):
+def delete_catalog(request, username, repository, path):
     try:
         user = User.objects.get(username=username)
     except User.DoesNotExist:
@@ -208,23 +209,24 @@ def delete_catalog(request, username, repository, parental_catalog, catalog):
             searched_repository = Repository.objects.get(owner=user, name=repository)
         except Repository.DoesNotExist:
             raise Http404("Repository does not exist")
-        try:
-            searched_parental_catalog = Catalog.objects.get(
-                name=parental_catalog,
-                repository_Id=searched_repository
-            )
-        except Catalog.DoesNotExist:
-            searched_parental_catalog = None
-        try:
-            searched_catalog = Catalog.objects.get(name=catalog, repository_Id=searched_repository,
-                                                   parent_catalog=searched_parental_catalog)
-        except Catalog.DoesNotExist:
-            raise Http404("Catalog does not exist")
-        searched_catalog.delete()
-        if searched_parental_catalog is None:
-            return HttpResponseRedirect('/user/' + str(user) + "/" + str(searched_repository.name))
+        if path is not None:
+            catalogs_path = path.split('/')
+            for n, catalog in enumerate(catalogs_path):
+                if n == 0:
+                    try:
+                        parental_catalog = Catalog.objects.get(name=catalog, repository_Id=searched_repository, parent_catalog=None)
+                    except Catalog.DoesNotExist:
+                        raise Http404("Catalog does not exist")
+                else:
+                    try:
+                        parental_catalog = Catalog.objects.get(name=catalog, repository_Id=searched_repository, parent_catalog=parental_catalog)
+                    except Catalog.DoesNotExist:
+                        raise Http404("Catalog does not exist")
         else:
-            return HttpResponseRedirect(
-                '/user/' + str(user) + "/" + str(searched_repository.name) + "/" + str(searched_parental_catalog.name))
+            raise Http404("Catalog does not exist")
+
+        parental_catalog.delete()
+        return HttpResponseRedirect(
+            '/user/' + str(user) + "/" + str(searched_repository.name) + "/" + path[:-(len(catalogs_path[-1])+1)])
     else:
         return HttpResponse('Unauthorized', status=401)
