@@ -55,6 +55,10 @@ coverage.xml
 *.log
 local_settings.py
 db.sqlite3
+GothHub/home/migrations/
+GothHub/logowanie/migrations/
+GothHub/repository_statistics/migrations/
+GothHub/upload/migrations/
 
 # Flask stuff:
 instance/
