@@ -193,7 +193,7 @@ def catalogs_and_files(request, username, repository, path):
     return render(request, 'repository_catalogs_and_files.html', {
         'user': user.username,
         'repository': searched_repository,
-        'path': path,
+        'catalogs_path': catalogs_path,
         'catalogs': catalogs, 'files': files
     })
 
