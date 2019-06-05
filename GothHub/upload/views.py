@@ -34,13 +34,14 @@ def upload_file(request, username, repository, path):
     #     catalog = Catalog.objects.get(name=catalog, repository_Id=repo, parent_catalog=None)
     if request.method == 'POST':
         form = FileUploadForm(request.POST, request.FILES)
-        uploaded_file = request.FILES['document']
-        fs = FileSystemStorage()
-        name = fs.save(upladed_file.name, uploaded_file)
+        #uploaded_file = request.FILES['document']
+        #fs = FileSystemStorage()
+        #name = fs.save(upladed_file.name, uploaded_file)
 
         if form.is_valid():
-            #dir = form.cleaned_data.get('dir')
-            ex = os.path.splitext(str(name))[1]
+            dir = form.cleaned_data.get('dir')
+            print(dir)
+            ex = os.path.splitext(str(dir.name))[1]
             ex = ex.lstrip('.')
             allowed_extensions_list = list(ProgrammingLanguage.objects.all().values_list('extensions', flat=True))
             allowed_extensions = []
@@ -50,16 +51,18 @@ def upload_file(request, username, repository, path):
             print(allowed_extensions)
             if ex in allowed_extensions:
                 print('kurea')
-                uploaded_file = File.objects.create(
-                    author=user,
-                    file_name=name,
-                    extension=ex,
-                    repository_Id=repo,
-                    catalog_Id=parental_catalog,
-                )
-
+                # form.save()
+                # print(uploaded_file.dir.path)
                 try:
-                    previous_file = File.objects.get(file_name=dir, author=user, repository_Id=repo, catalog_Id=parental_catalog)
+                    previous_file = File.objects.get(file_name=dir.name, author=user, repository_Id=repo, catalog_Id=parental_catalog)
+                    uploaded_file = File.objects.create(
+                        author=user,
+                        file_name=dir.name,
+                        extension=ex,
+                        repository_Id=repo,
+                        catalog_Id=parental_catalog,
+                        dir=dir
+                        )
                     latest_version = Version.objects.get(file_Id=previous_file).values('version_nr')
                     Version.objects.create(
                         file_Id=uploaded_file,
@@ -67,6 +70,14 @@ def upload_file(request, username, repository, path):
                     )
 
                 except File.DoesNotExist:
+                    uploaded_file = File.objects.create(
+                        author=user,
+                        file_name=dir.name,
+                        extension=ex,
+                        repository_Id=repo,
+                        catalog_Id=parental_catalog,
+                        dir=dir
+                        )
                     Version.objects.create(
                         file_Id=uploaded_file,
                         version_nr=1,
@@ -74,7 +85,15 @@ def upload_file(request, username, repository, path):
                     return HttpResponse('gut')
                 except MultipleObjectsReturned:
                     try:
-                        older_files = File.objects.filter(file_name=dir, author=user, repository_Id=repo, catalog_Id=parental_catalog)
+                        older_files = File.objects.filter(file_name=dir.name, author=user, repository_Id=repo, catalog_Id=parental_catalog)
+                        uploaded_file = File.objects.create(
+                            author=user,
+                            file_name=dir.name,
+                            extension=ex,
+                            repository_Id=repo,
+                            catalog_Id=parental_catalog,
+                            dir=dir
+                            )
                         latest_version = Version.objects.get(file_Id=older_files).values('version_nr').latest('version_nr')
                         Version.objects.create(
                             file_Id=uploaded_file,
