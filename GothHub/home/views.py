@@ -117,12 +117,12 @@ def add_catalog(request, username, repository, path=None):
             for n, catalog in enumerate(catalogs_path):
                 if n == 0:
                     try:
-                        parent = Catalog.objects.get(name=catalog, repository_Id=searched_repository, parent_catalog=None)
+                        parental_catalog = Catalog.objects.get(name=catalog, repository_Id=searched_repository, parent_catalog=None)
                     except Catalog.DoesNotExist:
                         raise Http404("Catalog does not exist")
                 else:
                     try:
-                        Catalog.objects.get(name=catalog, repository_Id=searched_repository, parent_catalog=parent)
+                        Catalog.objects.get(name=catalog, repository_Id=searched_repository, parent_catalog=parental_catalog)
                     except Catalog.DoesNotExist:
                         raise Http404("Catalog does not exist")
         if request.method == 'POST':
@@ -137,18 +137,14 @@ def add_catalog(request, username, repository, path=None):
                     })
                 except Catalog.DoesNotExist:
                     pass
-                if path == 'None':
+                if path == None:
                     Catalog.objects.create(name=name, repository_Id=searched_repository, parent_catalog=None)
                     return HttpResponseRedirect('/user/' + str(user) + "/" + str(searched_repository.name))
                 else:
-                    searched_parental_catalog = Catalog.objects.get(
-                        name=catalogs_path[-1],
-                        repository_Id=searched_repository
-                    )
                     Catalog.objects.create(
                         name=name,
                         repository_Id=searched_repository,
-                        parent_catalog=searched_parental_catalog
+                        parent_catalog=parental_catalog
                     )
                     return HttpResponseRedirect('/user/' + str(user) + "/" + str(searched_repository.name) + "/" + path)
         else:
