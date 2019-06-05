@@ -8,7 +8,7 @@ from .forms import RepoCreationForm, CatalogCreationForm
 from django.db import DatabaseError
 from django.contrib.auth.decorators import login_required
 from django.core.exceptions import ObjectDoesNotExist
-
+from django.conf import settings
 
 def home(request):
     if request.user.is_authenticated is True:
@@ -31,6 +31,7 @@ def user(request, username):
     return render(request, 'users_profile.html', {'username': username,
                                                   'repositories_owner': repositories_owner})
 
+
 @login_required
 def add_repository(request, username):
     try:
@@ -51,6 +52,7 @@ def add_repository(request, username):
         return render(request, 'repository.html', {'form': form})
     else:
         return HttpResponseForbidden('You are not authorized to add repository')
+
 
 def repository(request, username, repository):
     try:
@@ -89,6 +91,7 @@ def repository(request, username, repository):
                       'catalogs': catalogs, 'files': files
                   })
 
+
 @login_required
 def delete_repository(request, username, repository):
     # TODO: check other users permissions
@@ -102,6 +105,7 @@ def delete_repository(request, username, repository):
         searched_repository.delete()
         return HttpResponseRedirect('/')
     return HttpResponseForbidden('You are not authorized to delete this repository')
+
 
 @login_required
 def add_catalog(request, username, repository, path=None):
@@ -233,3 +237,41 @@ def delete_catalog(request, username, repository, path):
             '/user/' + str(user) + "/" + str(searched_repository.name) + "/" + path[:-(len(catalogs_path[-1])+1)])
     else:
         return HttpResponse('Unauthorized', status=401)
+
+
+@login_required
+def show_file(request, username, repository, path, filename,version):
+    try:
+        user = User.objects.get(username=username)
+    except User.DoesNotExist:
+        raise Http404("User does not exist")
+    if request.user == user:
+        try:
+            searched_repository = Repository.objects.get(owner=user, name=repository)
+        except Repository.DoesNotExist:
+            raise Http404("Repository does not exist")
+        if path is not None:
+            catalogs_path = path.split('/')
+            for n, catalog in enumerate(catalogs_path):
+                if n == 0:
+                    try:
+                        parental_catalog = Catalog.objects.get(name=catalog, repository_Id=searched_repository,
+                                                               parent_catalog=None)
+                    except Catalog.DoesNotExist:
+                        raise Http404("Catalog does not exist")
+                else:
+                    try:
+                        parental_catalog = Catalog.objects.get(name=catalog, repository_Id=searched_repository,
+                                                               parent_catalog=parental_catalog)
+                    except Catalog.DoesNotExist:
+                        raise Http404("Catalog does not exist")
+            # TODO: make function from the above (this code is repeated many times)
+            #Get file:
+            matching_files=
+            your_media_root = settings.MEDIA_ROOT
+            catalogs_path[-1]
+        else:
+            raise Http404("Catalog does not exist")
+    else:
+        return HttpResponse('Unauthorized', status=401)
+
