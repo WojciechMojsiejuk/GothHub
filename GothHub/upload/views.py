@@ -34,9 +34,13 @@ def upload_file(request, username, repository, path):
     #     catalog = Catalog.objects.get(name=catalog, repository_Id=repo, parent_catalog=None)
     if request.method == 'POST':
         form = FileUploadForm(request.POST, request.FILES)
+        uploaded_file = request.FILES['document']
+        fs = FileSystemStorage()
+        name = fs.save(upladed_file.name, uploaded_file)
+
         if form.is_valid():
-            dir = form.cleaned_data.get('dir')
-            ex = os.path.splitext(str(dir))[1]
+            #dir = form.cleaned_data.get('dir')
+            ex = os.path.splitext(str(name))[1]
             ex = ex.lstrip('.')
             allowed_extensions_list = list(ProgrammingLanguage.objects.all().values_list('extensions', flat=True))
             allowed_extensions = []
@@ -48,7 +52,7 @@ def upload_file(request, username, repository, path):
                 print('kurea')
                 uploaded_file = File.objects.create(
                     author=user,
-                    file_name=dir,
+                    file_name=name,
                     extension=ex,
                     repository_Id=repo,
                     catalog_Id=parental_catalog,
@@ -67,7 +71,7 @@ def upload_file(request, username, repository, path):
                         file_Id=uploaded_file,
                         version_nr=1,
                     )
-                    return redirect('download')
+                    return HttpResponse('gut')
                 except MultipleObjectsReturned:
                     try:
                         older_files = File.objects.filter(file_name=dir, author=user, repository_Id=repo, catalog_Id=parental_catalog)
