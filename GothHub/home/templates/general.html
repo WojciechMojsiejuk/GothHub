@@ -8,6 +8,13 @@
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" integrity="sha384-1q8mTJOASx8j1Au+a5WDVnPi2lkFfwwEAa8hDDdjZlpLegxhjVME1fgjWPGmkzs7" crossorigin="anonymous">
   <!--  <link rel="stylesheet" href="{% static 'css/style_home.css' %}"> -->
     <link rel="shortcut icon" href="{%  static 'favicon.ico' %}">
+
+    <!--Google font-->
+    <link href="https://fonts.googleapis.com/css?family=K2D:300,400,500,700,800" rel="stylesheet">
+
+    <!-- Bootstrap CSS / Color Scheme -->
+    <link rel="stylesheet" href="{% static 'css/bootstrap.css' %}">
+
   </head>
   <body>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
@@ -45,7 +52,7 @@
                 </ul>
               </li>
               <form class="navbar-form navbar-left" method="get" action="/user/{{ user.username }}/add_repository">
-                 <button type="submit" class="btn btn-defaul" value="dodajRepozytorium">Dodaj repozytorium</button>
+                 <button type="submit" class="btn btn-primary" value="dodajRepozytorium">Dodaj repozytorium</button>
               </form>
             </ul>
 
