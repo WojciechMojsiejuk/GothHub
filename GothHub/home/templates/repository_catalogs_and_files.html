@@ -24,10 +24,12 @@
           <h2>{{ file.name }}</h2>
           <button class="btn btn-primary" type="submit" value="edytuj">Edytuj</button>
           <button class="btn btn-primary" type="submit" value="usun">Usun</button>
+        {% endfor %}
+      {% endif %}
+      {% if catalogs_path %}
           <form method="get" action="{{ path }}/upload">
               <button class="btn btn-primary" type="submit" value="dodajPlik">Dodaj plik</button>
           </form>
-        {% endfor %}
       {% endif %}
       <form method="get" action="{{ path }}/add_catalog">
           <button class="btn btn-primary" type="submit" value="dodajKatalog">Dodaj katalog</button>
