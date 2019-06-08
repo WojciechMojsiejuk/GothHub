@@ -13,6 +13,8 @@ from .models import Profile
 from .forms import SignUpForm, LoginForm, EditUsernameForm, EditPasswordForm
 from .tokens import account_activation_token
 
+from sendgrid import SendGridAPIClient
+from sendgrid.helpers.mail import Mail
 
 # Registering a user
 def signup(request):
@@ -22,15 +24,28 @@ def signup(request):
             user = form.save(commit=False)
             user.is_active = False
             user.save()
+            
             current_site = get_current_site(request)
-            subject = 'Activate Your MySite Account'
-            message = render_to_string('logowanie/account_activation_email.html', {
-                'user': user,
-                'domain': current_site.domain,
-                'uid': urlsafe_base64_encode(force_bytes(user.pk)),
-                'token': account_activation_token.make_token(user),
-            })
-            user.email_user(subject, message)
+            token = account_activation_token.make_token(user)
+            message = Mail(
+                from_email='activation@gothhub.com',
+                to_emails=user.email,
+                subject='GothHub activation token',
+                html_content=render_to_string('logowanie/account_activation_email.html', {
+                    'user': user,
+                    'domain': current_site.domain,
+                    'uid': urlsafe_base64_encode(force_bytes(user.pk)),
+                    'token': account_activation_token.make_token(user),
+                }))
+            try:
+                sg = SendGridAPIClient('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')
+                response = sg.send(message)
+                print(response.status_code)
+                print(response.body)
+                print(response.headers)
+            except Exception as e:
+                print(e.message)
+
             return HttpResponse('Wysłano email z linkiem aktywacyjnym')
     else:
         form = SignUpForm()
