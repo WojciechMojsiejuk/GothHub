@@ -7,18 +7,16 @@
     {% for repository in repositories_owner %}
       <a href="/user/{{ username }}/{{ repository.name }}"><h2>{{ repository.name }}</h2></a>
       <p>{{ repository.is_public }}</p>
+      {% if username == user.username %}
+      <div class="repo">
+          <form method="get" action="#">
+              <button class="btn btn-primary" type="submit" value="edytuj">Edytuj</button>
+          </form>
+          <form method="get" action="/user/{{ request.user.username }}/{{ repository.name }}/delete_repository">
+              <button class="btn btn-primary" type="submit" value="usun">Usun</button>
+          </form>
+      </div>
+      {% endif %}
     {% endfor %}
-  {% endif %}
-  {% if username == user.username %}
-    <div class="repo">
-      <!-- <form method="get" action="/upload">
-        <button class="button2" type="submit" value="dodajPlik">Dodaj plik</button>
-      </form>
-      <form method="get" action="/user/{{ request.user.username }}/None/add_catalog">
-          <button class="button2" type="submit" value="dodajKatalog">Dodaj katalog</button>
-      </form> -->
-      <button class="btn btn-primary" type="submit" value="edytuj">Edytuj</button>
-      <button class="btn btn-primary" type="submit" value="usun">Usun</button>
-    </div>
   {% endif %}
 {% endblock %}
