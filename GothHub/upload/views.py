@@ -40,17 +40,13 @@ def upload_file(request, username, repository, path):
 
         if form.is_valid():
             dir = form.cleaned_data.get('dir')
-            print(dir)
             ex = os.path.splitext(str(dir.name))[1]
             ex = ex.lstrip('.')
             allowed_extensions_list = list(ProgrammingLanguage.objects.all().values_list('extensions', flat=True))
             allowed_extensions = []
             for i in allowed_extensions_list:
                 allowed_extensions.extend(str(i).split(','))
-            print(ex)
-            print(allowed_extensions)
             if ex in allowed_extensions:
-                print('kurea')
                 # form.save()
                 # print(uploaded_file.dir.path)
                 try:

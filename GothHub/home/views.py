@@ -263,7 +263,7 @@ def show_file(request, username, repository, path, filename,version):
                         raise Http404("Catalog does not exist")
             # TODO: make function from the above (this code is repeated many times)
             #Get file:
-            # matching_files=
+            matching_files=File.objects.filter(file_name=filename, author=user,)
             # your_media_root = settings.MEDIA_ROOT
             # catalogs_path[-1]
         else:

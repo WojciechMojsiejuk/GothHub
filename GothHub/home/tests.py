@@ -5,12 +5,15 @@ from django.test import Client
 from home.views import repository
 from home.models import Repository as repo
 from home.models import Catalog as catalog
+from django.core.management import call_command
+
 # Create your tests here.
 class HomePageTest(TestCase):
 
     # creating instance of a client.
     def setUp(self):
         self.client = Client()
+        call_command("loaddata", "' + 'programming_languages_definition.json' + '", verbosity=0)
     #HomePage should allow to create new repository
     def test_user_can_add_repository(self):
         repo.objects.create(name="MojeRepo",is_public=True)

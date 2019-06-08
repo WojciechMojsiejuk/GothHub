@@ -3,6 +3,14 @@ import os
 import sys
 
 if __name__ == '__main__':
+    is_testing = 'test' in sys.argv
+    if is_testing:
+        import coverage
+
+        cov = coverage.coverage(source=['app'], omit=['*/tests/*'])
+        cov.set_option('report:show_missing', True)
+        cov.erase()
+        cov.start()
     os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'GothHub.settings')
     try:
         from django.core.management import execute_from_command_line
@@ -13,3 +21,8 @@ if __name__ == '__main__':
             "forget to activate a virtual environment?"
         ) from exc
     execute_from_command_line(sys.argv)
+    if is_testing:
+        cov.stop()
+        cov.save()
+        cov.report()
+
