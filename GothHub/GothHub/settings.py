@@ -53,7 +53,7 @@ TEST_RUNNER = 'django_nose.NoseTestSuiteRunner'
 # Tell nose to measure coverage on the apps
 NOSE_ARGS = [
     '--with-coverage',
-    '--cover-package=home,logowanie,upload,repository_statistics',
+    '--cover-package=home, logowanie, upload, repository_statistics',
 ]
 
 MIDDLEWARE = [

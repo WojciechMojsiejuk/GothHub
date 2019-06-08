@@ -44,15 +44,15 @@ def add_repository(request, username):
             if form.is_valid():
                 name = form.cleaned_data.get('name')
                 is_public = form.cleaned_data.get('is_public')
-                try:
-                    Repository.objects.filter(name=name, owner=user)
-                except Repository.DoesNotExist:
-                    Repository.objects.create(name=name, is_public=is_public, owner=user)
-                    return HttpResponseRedirect('/')
-                form.add_error('name', "Repozytorium o takiej nazwie już istnieje")
+                if is_public == 'True' or is_public == 'False':
+                    try:
+                        Repository.objects.get(name=name, owner=user)
+                        form.add_error('name', "Repozytorium o takiej nazwie już istnieje")
+                    except Repository.DoesNotExist:
+                        Repository.objects.create(name=name, is_public=is_public, owner=user)
+                        return HttpResponseRedirect('/')
         else:
             form = RepoCreationForm()
-            repositories = Repository.objects.filter(owner=user)
         return render(request, 'repository.html', {'form': form})
     else:
         return HttpResponseForbidden('You are not authorized to add repository')
@@ -89,15 +89,17 @@ def repository(request, username, repository):
 
 @login_required
 def delete_repository(request, username, repository):
-    # TODO: check other users permissions
     try:
         user = User.objects.get(username=username)
     except User.DoesNotExist:
         raise Http404("User does not exist")
 
     if request.user == user:
-        searched_repository = Repository.objects.get(owner=user, name=repository)
-        searched_repository.delete()
+        try:
+            searched_repository = Repository.objects.get(owner=user, name=repository)
+            searched_repository.delete()
+        except Repository.DoesNotExist:
+            raise Http404("Repository does not exists")
         return HttpResponseRedirect('/user/' + user.username)
     return HttpResponseForbidden('You are not authorized to delete this repository')
 
@@ -111,7 +113,6 @@ def add_catalog(request, username, repository, path=None):
     if request.user == user:
         searched_repository = Repository.objects.get(owner=user, name=repository)
         if path is not None:
-            print("elo")
             catalogs_path = path.split('/')
             for n, catalog in enumerate(catalogs_path):
                 if n == 0:
