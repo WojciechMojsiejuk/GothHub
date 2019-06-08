@@ -1,9 +1,8 @@
 from django.http import HttpRequest, HttpResponseForbidden, Http404
 from django.test import Client
 from django.test import TestCase
-from home.models import Repository, Catalog
+from home.models import Repository, Catalog, File
 from home.views import *
-from home.forms import RepoCreationForm
 from django.contrib.auth.models import User
 
 
@@ -167,7 +166,8 @@ class RepositoryPage(TestCase):
 
     def test_user_receives_correct_repository(self):
         self.client.login(username='JanKowalski', password='12345')
-        self.catalog = Catalog.objects.create(name='KatalogJanka', repository_Id=self.public_repository, parent_catalog=None)
+        self.catalog = Catalog.objects.create(name='KatalogJanka', repository_Id=self.public_repository,
+                                              parent_catalog=None)
         self.response = self.client.get('/user/' + str(self.user.username) + '/' + str(self.public_repository.name))
         self.assertEqual(self.response.context['repository'], self.public_repository)
         self.assertEqual(self.response.context['catalogs'][0], self.catalog)
@@ -192,7 +192,8 @@ class DeleteRepositoryPage(TestCase):
 
     def test_delete_repository_page_returns_correct_response(self):
         self.client.login(username='JanKowalski', password='12345')
-        self.response = self.client.get('/user/' + str(self.user.username) + '/' + str(self.public_repository.name) +'/delete_repository')
+        self.response = self.client.get(
+            '/user/' + str(self.user.username) + '/' + str(self.public_repository.name) + '/delete_repository')
         # Check that the response is 302 = redirect.
         self.assertEqual(self.response.status_code, 302)
 
@@ -243,18 +244,21 @@ class AddCatalogPage(TestCase):
 
     def test_template(self):
         self.client.login(username='JanKowalski', password='12345')
-        self.response = self.client.get('/user/' + str(self.user.username) + '/' + str(self.public_repository.name)+'/add_catalog')
+        self.response = self.client.get(
+            '/user/' + str(self.user.username) + '/' + str(self.public_repository.name) + '/add_catalog')
         self.assertTemplateUsed(self.response, 'catalog.html')
 
     def test_add_catalog_page_returns_correct_response(self):
         self.client.login(username='JanKowalski', password='12345')
-        self.response = self.client.get('/user/' + str(self.user.username) + '/' + str(self.public_repository.name)+'/add_catalog')
+        self.response = self.client.get(
+            '/user/' + str(self.user.username) + '/' + str(self.public_repository.name) + '/add_catalog')
         # Check that the response is 200 OK.
         self.assertEqual(self.response.status_code, 200)
 
     def test_incorrect_user(self):
         self.client.login(username='JanKowalski', password='12345')
-        self.response = self.client.get('/user/' + str(self.user.username) + '/' + str(self.public_repository.name)+'/add_catalog')
+        self.response = self.client.get(
+            '/user/' + str(self.user.username) + '/' + str(self.public_repository.name) + '/add_catalog')
         self.assertRaises(Http404)
 
     def test_add_catalog_shouldnt_allow_to_add_catalog_if_user_is_not_an_owner(self):
@@ -277,34 +281,151 @@ class AddCatalogPage(TestCase):
         self.response = self.client.post(
             '/user/' + str(self.user.username) + '/' + str(self.public_repository.name) + '/add_catalog',
             {'name': 'KatalogJanka'})
-        self.assertNotEqual(Catalog.objects.filter(name="KatalogJanka", repository_Id=self.public_repository).count(), 2)
+        self.assertNotEqual(Catalog.objects.filter(name="KatalogJanka", repository_Id=self.public_repository).count(),
+                            2)
 
-'''        
-class HomePageCatalogTest(TestCase):
+
+class CatalogsAndFilesPage(TestCase):
+
+    # creating instance of a client.
     def setUp(self):
+        # user which repositories are tested
+        self.user = User.objects.create(username="JanKowalski")
+        self.user.set_password('12345')
+        self.user.save()
+        # other user
+        self.user2 = User.objects.create(username="JanNowak")
+        self.user2.set_password('54321')
+        self.user2.save()
+
         self.client = Client()
-        self.mojerepo=repo.objects.create(name="MojeRepo",is_public=True)
+        self.public_repository = Repository.objects.create(name="PubliczneRepozytoriumJanka", owner=self.user,
+                                                           is_public=True)
+        self.users_parental_catalog = Catalog.objects.create(
+            name="KatalogJanka1",
+            repository_Id=self.public_repository,
+            parent_catalog=None)
+        self.users_catalog = Catalog.objects.create(
+            name="KatalogJanka2",
+            repository_Id=self.public_repository,
+            parent_catalog=self.users_parental_catalog)
+        self.users_file = File.objects.create(
+            author=self.user,
+            file_name="PlikJanka",
+            repository_Id=self.public_repository,
+            catalog_Id=self.users_parental_catalog
+        )
 
-    #HomePage should allow to create new catalog
-    def test_user_can_add_catalog_to_existing_repository(self):
-        catalog.objects.create(name="Katalog1",repository_Id=self.mojerepo,parent_catalog=None)
+    def test_template(self):
+        self.client.login(username='JanKowalski', password='12345')
+        self.response = self.client.get('/user/' + str(self.user.username) + '/' +
+                                        str(self.public_repository.name) + '/' + str(self.users_parental_catalog))
+        self.assertTemplateUsed(self.response, 'repository_catalogs_and_files.html')
+
+    def test_add_catalog_page_returns_correct_response(self):
+        self.client.login(username='JanKowalski', password='12345')
+        self.response = self.client.get('/user/' + str(self.user.username) + '/' +
+                                        str(self.public_repository.name) + '/' + str(self.users_parental_catalog))
+        # Check that the response is 200 OK.
+        self.assertEqual(self.response.status_code, 200)
+
+    def test_incorrect_user(self):
+        self.client.login(username='JanKowalski', password='12345')
+        self.response = self.client.get('/user/jankowalski/' +
+                                        str(self.public_repository.name) + '/' + str(self.users_parental_catalog))
+        self.assertRaises(Http404)
+
+    def test_invalid_repository_owner(self):
+        self.client.login(username='JanKowalski', password='12345')
+        self.response = self.client.get('/user/' + str(self.user.username) + '/ZlaNazwa/' +
+                                        str(self.users_parental_catalog))
+        self.assertRaises(Http404)
+
+    def test_invalid_repository_others(self):
+        self.client.login(username='JanNowak', password='54321')
+        self.response = self.client.get('/user/' + str(self.user.username) + '/ZlaNazwa/' +
+                                        str(self.users_parental_catalog))
+        self.assertRaises(Http404)
+
+    def test_invalid_catalog(self):
+        self.client.login(username='JanKowalski', password='12345')
+        self.response = self.client.get('/user/' + str(self.user.username) + '/' +
+                                        str(self.public_repository.name) + '/ZlaNazwa')
+        self.assertRaises(Http404)
+
+    def test_users_gets_catalogs_and_files(self):
+        self.client.login(username='JanKowalski', password='12345')
+        self.response = self.client.get('/user/' + str(self.user.username) + '/' +
+                                        str(self.public_repository.name) + '/' + str(self.users_parental_catalog))
+        self.assertTemplateUsed(self.response, 'repository_catalogs_and_files.html')
+        self.assertEqual(self.response.context['files'][0], self.users_file)
+        self.assertEqual(self.response.context['catalogs'][0], self.users_catalog)
 
 
-    # HomePage should allow to create new repository
-    def test_user_can_add_repository(self):
-        repo.objects.create(name="MojeRepo",is_public=True)
-        request=HttpRequest()
-        response=repository(request)
-        self.assertIn('MojeRepo',response.content.decode())
+class DeleteCatalogPage(TestCase):
 
-    #HomePage should allow to delete selected repository
-    def test_user_can_delete_repository(self):
-        repo.objects.create(name="MojeRepo",is_public=True)
-        request=HttpRequest()
-        response=repository(request)
-        self.assertIn('MojeRepo',response.content.decode())
-        #Checking if repository is still on site aftere deleting it
-        repo.objects.all().delete()
-        request=HttpRequest()
-        response=repository(request)
-        self.assertNotIn('MojeRepo',response.content.decode())'''
+    # creating instance of a client.
+    def setUp(self):
+        # user which repositories are tested
+        self.user = User.objects.create(username="JanKowalski")
+        self.user.set_password('12345')
+        self.user.save()
+        # other user
+        self.user2 = User.objects.create(username="JanNowak")
+        self.user2.set_password('54321')
+        self.user2.save()
+
+        self.client = Client()
+        self.public_repository = Repository.objects.create(name="PubliczneRepozytoriumJanka", owner=self.user,
+                                                           is_public=True)
+        self.users_parental_catalog = Catalog.objects.create(
+            name="KatalogJanka1",
+            repository_Id=self.public_repository,
+            parent_catalog=None)
+        self.users_catalog = Catalog.objects.create(
+            name="KatalogJanka2",
+            repository_Id=self.public_repository,
+            parent_catalog=self.users_parental_catalog)
+        self.users_file = File.objects.create(
+            author=self.user,
+            file_name="PlikJanka",
+            repository_Id=self.public_repository,
+            catalog_Id=self.users_parental_catalog
+        )
+
+    def test_delete_catalog_page_returns_correct_response(self):
+        self.client.login(username='JanKowalski', password='12345')
+        self.response = self.client.get('/user/' + str(self.user.username) + '/' +
+                                        str(self.public_repository.name) + '/' +
+                                        str(self.users_parental_catalog) + '/' +
+                                        str(self.users_catalog)+'/delete_catalog')
+
+        # Check that the response is 302 = Redirect.
+        self.assertEqual(self.response.status_code, 302)
+
+    def test_incorrect_user(self):
+        self.client.login(username='JanKowalski', password='12345')
+        self.response = self.client.get('/user/' + str(self.user.username) + '/' +
+                                        str(self.public_repository.name) + '/' +
+                                        str(self.users_parental_catalog) + '/' +
+                                        str(self.users_catalog) + '/delete_catalog')
+        self.assertRaises(Http404)
+
+    def test_delete_catalog_shouldnt_allow_to_delete_catalog_if_user_is_not_an_owner(self):
+        self.client.login(username='JanNowak', password='54321')
+        self.response = self.client.get('/user/' + str(self.user.username) + '/' +
+                                        str(self.public_repository.name) + '/' +
+                                        str(self.users_parental_catalog) + '/' +
+                                        str(self.users_catalog) + '/delete_catalog')
+        # Check that the response is 401 = unauthorized.
+        self.assertEqual(self.response.status_code, 401)
+
+    def test_user_delete_catalog(self):
+        self.client.login(username='JanNowak', password='54321')
+        self.response = self.client.get('/user/' + str(self.user.username) + '/' +
+                                        str(self.public_repository.name) + '/' +
+                                        str(self.users_parental_catalog) + '/' +
+                                        str(self.users_catalog) + '/delete_catalog')
+        self.assertEqual(Catalog.objects.filter(repository_Id=self.public_repository).count(), 1)
+        self.assertEqual(Catalog.objects.filter(repository_Id=self.public_repository, name=self.users_catalog).count(), 0)
+        self.assertEqual(Catalog.objects.filter(repository_Id=self.public_repository, name=self.users_parental_catalog).count(), 1)

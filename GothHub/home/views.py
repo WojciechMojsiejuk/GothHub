@@ -44,13 +44,12 @@ def add_repository(request, username):
             if form.is_valid():
                 name = form.cleaned_data.get('name')
                 is_public = form.cleaned_data.get('is_public')
-                if is_public == 'True' or is_public == 'False':
-                    try:
-                        Repository.objects.get(name=name, owner=user)
-                        form.add_error('name', "Repozytorium o takiej nazwie już istnieje")
-                    except Repository.DoesNotExist:
-                        Repository.objects.create(name=name, is_public=is_public, owner=user)
-                        return HttpResponseRedirect('/')
+                try:
+                    Repository.objects.get(name=name, owner=user)
+                    form.add_error('name', "Repozytorium o takiej nazwie już istnieje")
+                except Repository.DoesNotExist:
+                    Repository.objects.create(name=name, is_public=is_public, owner=user)
+                    return HttpResponseRedirect('/')
         else:
             form = RepoCreationForm()
         return render(request, 'repository.html', {'form': form})
@@ -201,7 +200,8 @@ def catalogs_and_files(request, username, repository, path):
         'repository': searched_repository,
         'catalogs_path': urls,
         'path': path,
-        'catalogs': catalogs, 'files': files
+        'catalogs': catalogs,
+        'files': files
     })
 
 @login_required
@@ -239,7 +239,7 @@ def delete_catalog(request, username, repository, path):
 
 
 @login_required
-def show_file(request, username, repository, path, filename,version):
+def show_file(request, username, repository, path, filename, version):
     try:
         user = User.objects.get(username=username)
     except User.DoesNotExist:
