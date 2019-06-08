@@ -1,46 +1,37 @@
 {% extends "users_profile.html" %}
 {% block content_block %}
-  {% if username %}
     {{ username }}
-  {% endif %}
-  {{repository.name}}
-  {{parent_catalog.name}}
-  {% if user.username == request.user.username or repository.is_public == True %}
+    {{repository.name}}
+    {% for name, url in catalogs_path %}
+        / <a href="{{ url }}">{{ name }}</a>
+    {% endfor %}
     <div class="catalog">
     <h1>Catalogs:</h1>
       {% if catalogs is not None %}
         {% for catalog in catalogs %}
-          <a href="{{ repository.name }}/{{ catalog.name }}"><h2>{{ catalog.name }}</h2></a>
-          <button class="btn btn-primary"" type="submit" value="edytuj">Edytuj</button>
-          {% if parent_catalog.name == None %}
-            <form method="get" action="/user/{{ request.user.username }}/{{ repository.name }}/None/{{catalog.name}}/delete_catalog">
-            {% else %}
-         <form method="get" action="/user/{{ request.user.username }}/{{ repository.name }}/{{ parent_catalog.name }}/{{catalog.name}}/delete_catalog">
-        {% endif %}
-
+          <a href="{{ path }}/{{ catalog.name }}"><h2>{{ catalog.name }}</h2></a>
+          <form method="get" action="#">
+              <button class="btn btn-primary"" type="submit" value="edytuj">Edytuj</button>
+          </form>
+          <form method="get" action="{{ path }}/{{ catalog.name }}/delete_catalog">
               <button class="btn btn-primary" type="submit" value="usun">Usun</button>
           </form>
         {% endfor %}
       {% endif %}
-    <h1>Files:</h1>
       {% if files is not None %}
+      <h1>Files:</h1>
         {% for file in files %}
           <h2>{{ file.name }}</h2>
           <button class="btn btn-primary" type="submit" value="edytuj">Edytuj</button>
           <button class="btn btn-primary" type="submit" value="usun">Usun</button>
+          <form method="get" action="{{ path }}/upload">
+              <button class="btn btn-primary" type="submit" value="dodajPlik">Dodaj plik</button>
+          </form>
         {% endfor %}
       {% endif %}
-      <form method="get" action="/upload">
-        <button class="btn btn-primary" type="submit" value="dodajPlik">Dodaj plik</button>
-      </form>
-      {% if parent_catalog.name == None %}
-        <form method="get" action="/user/{{ request.user.username }}/{{ repository.name }}/None/add_catalog">
-        {% else %}
-      <form method="get" action="/user/{{ request.user.username }}/{{ repository.name }}/{{ parent_catalog.name }}/add_catalog">
-    {% endif %}
+      <form method="get" action="{{ path }}/add_catalog">
           <button class="btn btn-primary" type="submit" value="dodajKatalog">Dodaj katalog</button>
       </form>
 
     </div>
-  {% endif %}
 {% endblock %}
