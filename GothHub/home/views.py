@@ -45,7 +45,7 @@ def add_repository(request, username):
                 name = form.cleaned_data.get('name')
                 is_public = form.cleaned_data.get('is_public')
                 try:
-                    Repository.objects.filter(name=name, owner=user)
+                    Repository.objects.get(name=name, owner=user)
                 except Repository.DoesNotExist:
                     Repository.objects.create(name=name, is_public=is_public, owner=user)
                     return HttpResponseRedirect('/')
