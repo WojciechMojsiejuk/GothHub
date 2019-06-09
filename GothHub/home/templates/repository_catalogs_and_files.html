@@ -21,7 +21,7 @@
       {% if files is not None %}
       <h1>Files:</h1>
         {% for file in files %}
-          <h2>{{ file.name }}</h2>
+          <h2>{{ file.file_name }}</h2>
           <button class="btn btn-primary" type="submit" value="edytuj">Edytuj</button>
           <button class="btn btn-primary" type="submit" value="usun">Usun</button>
         {% endfor %}
