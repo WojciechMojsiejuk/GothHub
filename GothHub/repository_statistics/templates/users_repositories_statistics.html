@@ -11,4 +11,56 @@
     <p>C++: {{ cpp_users_files_count }}</p>
     <p>C#: {{ chash_users_files_count }}</p>
     <p>Other: {{ other_users_files_count }}</p>
+    <canvas id="myChart"></canvas>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@2.8.0"></script>
+    <script>
+        var ctx = document.getElementById('myChart').getContext('2d');
+        var chart = new Chart(ctx, {
+        // The type of chart we want to create
+        type: 'pie',
+
+        // The data for our dataset
+        data: {
+            datasets: [{
+            data: [
+                        {{ python_users_files_count }},
+						{{ java_users_files_count }},
+						{{ c_users_files_count }},
+						{{ cpp_users_files_count }},
+						{{ chash_users_files_count }},
+                        {{ other_users_files_count }},
+					],
+					backgroundColor: [
+						"rgba(118, 14, 244, 1)",
+						"rgba(52, 235, 255, 1)",
+						"rgba(0, 213, 27, 1)",
+						"rgba(255, 237, 0, 1)",
+						"rgba(251, 156, 1, 1)",
+                        "rgba(223, 49, 0 ,1 )",
+					],
+					label: 'Dataset 1'
+            }],
+				labels: [
+					'Python',
+					'Java',
+					'C',
+					'C++',
+					'C#',
+                    'Other',
+				]
+			},
+
+        // Configuration options go here
+        options: {}
+});
+    </script>
+{#    <script>#}
+{#    var myDoughnutChart = new Chart(ctx, {#}
+{#    type: 'doughnut',#}
+{#    data: data,#}
+{#    });#}
+{##}
+
+{##}
+{#    </script>#}
 {% endblock %}
