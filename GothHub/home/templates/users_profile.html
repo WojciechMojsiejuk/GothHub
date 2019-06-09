@@ -9,7 +9,7 @@
       <p>{{ repository.is_public }}</p>
       {% if username == user.username %}
       <div class="repo">
-          <form method="get" action="#">
+          <form method="get" action="/user/{{ request.user.username }}/{{ repository.name }}/edit_repository">
               <button class="btn btn-primary" type="submit" value="edytuj">Edytuj</button>
           </form>
           <form method="get" action="/user/{{ request.user.username }}/{{ repository.name }}/delete_repository">

@@ -13,6 +13,7 @@ urlpatterns = [
     path('statistics', include('repository_statistics.urls')),
     path('user/<str:username>/<str:repository>', views.repository, name='repository'),
     path('user/<str:username>/<str:repository>/delete_repository', views.delete_repository, name='delete_repository'),
+    path('user/<str:username>/<str:repository>/edit_repository', views.edit_repository, name='edit_repository'),
     path('user/<str:username>/<str:repository>/<path:path>/upload', include('upload.urls')),
     path('user/<str:username>/<str:repository>/add_catalog', views.add_catalog, name='add_catalog'),
     path('user/<str:username>/<str:repository>/<path:path>/add_catalog', views.add_catalog, name='add_catalog'),

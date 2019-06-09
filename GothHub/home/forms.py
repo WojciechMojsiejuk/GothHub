@@ -19,6 +19,7 @@ class CatalogCreationForm(forms.Form):
         model = Catalog
         fields = ('name')
 
+
 class FileUploadForm(forms.ModelForm):
     dir = forms.FileField()
     class Meta:

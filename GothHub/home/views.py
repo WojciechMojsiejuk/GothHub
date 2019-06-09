@@ -56,6 +56,35 @@ def add_repository(request, username):
         return HttpResponseForbidden('You are not authorized to add repository')
 
 
+@login_required
+def edit_repository(request, username, repository):
+    try:
+        user = User.objects.get(username=username)
+    except User.DoesNotExist:
+        raise Http404("User does not exist")
+    if request.user == user:
+        try:
+            changed_repository = Repository.objects.get(name=repository, owner=user)
+        except Repository.DoesNotExist:
+            raise Http404("Repository does not exist")
+        if request.method == 'POST':
+            form = RepoCreationForm(request.POST)
+            if form.is_valid():
+                name = form.cleaned_data.get('name')
+                is_public = form.cleaned_data.get('is_public')
+                changed_repository.name = name
+                changed_repository.is_public = is_public
+                changed_repository.save()
+                repositories = Repository.objects.filter(owner=user)
+                request.session['repositories'] = [repository.name for repository in repositories]
+                return HttpResponseRedirect('/user/' + username)
+        else:
+            form = RepoCreationForm(initial={'name' : changed_repository.name , 'is_public' : changed_repository.is_public})
+        return render(request, 'repository.html', {'form': form})
+    else:
+        return HttpResponseForbidden('You are not authorized to edit repository')
+
+
 def repository(request, username, repository):
     try:
         user = User.objects.get(username=username)
