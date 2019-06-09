@@ -4,7 +4,7 @@
     "pk": 1,
     "fields": {
       "name": "Python",
-      "extensions": "py,py3,pyc,pyo,pyw,pyx,pyd,pxd,pyi,pyz,pywz,rpy,pyde,pyp,pyt,xpy,ipynb"
+      "extensions": "py,py3"
     }
   },
   {
@@ -20,7 +20,7 @@
     "pk": 3,
     "fields": {
       "name": "C",
-      "extensions": "c,h,H,hdl"
+      "extensions": "c,h"
     }
   },
   {
@@ -28,7 +28,7 @@
     "pk": 4,
     "fields": {
       "name": "C++",
-      "extensions": "cpp,cc,cxx,cbp,hpp,hxx"
+      "extensions": "cpp"
     }
   },
   {
@@ -44,7 +44,7 @@
     "pk": 6,
     "fields": {
       "name": "Other",
-      "extensions": "doc,docx,odt,pdf,rtf,tex,txt"
+      "extensions": "txt"
     }
   }
 ]

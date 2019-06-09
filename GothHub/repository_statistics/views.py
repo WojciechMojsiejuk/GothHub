@@ -4,6 +4,7 @@ from home.models import Repository, Catalog, File
 from django.contrib.auth.decorators import login_required
 from .models import ProgrammingLanguage
 
+
 # Create your views here.
 @login_required(login_url='/login/')
 def show_statistics(request):
@@ -24,18 +25,42 @@ def show_statistics(request):
     except Catalog.DoesNotExist:
         users_catalogs_count = 0
 
-    python_extensions_list = str(ProgrammingLanguage.objects.filter(name__exact='Python').values_list('extensions',
-                                                                                                  flat=True)).split(',')
-    java_extensions_list = str(ProgrammingLanguage.objects.filter(name__exact='Java').values_list('extensions',
-                                                                                                  flat=True)).split(',')
-    c_extensions_list = str(ProgrammingLanguage.objects.filter(name__exact='C').values_list('extensions',
-                                                                                                  flat=True)).split(',')
-    cpp_extensions_list = str(ProgrammingLanguage.objects.filter(name__exact='C++').values_list('extensions',
-                                                                                                  flat=True)).split(',')
-    chash_extensions_list = str(ProgrammingLanguage.objects.filter(name__exact='C#').values_list('extensions',
-                                                                                               flat=True)).split(',')
-    other_extensions_list = str(ProgrammingLanguage.objects.filter(name__exact='Other').values_list('extensions',
-                                                                                               flat=True)).split(',')
+    python_extensions = list(ProgrammingLanguage.objects.filter(name__exact='Python').values_list('extensions',
+                                                                                                  flat=True))
+    python_extensions_list = []
+    for i in python_extensions:
+        python_extensions_list.extend(str(i).split(','))
+
+    java_extensions = list(ProgrammingLanguage.objects.filter(name__exact='Java').values_list('extensions',
+                                                                                              flat=True))
+    java_extensions_list = []
+    for i in java_extensions:
+        java_extensions_list.extend(str(i).split(','))
+
+    c_extensions = list(ProgrammingLanguage.objects.filter(name__exact='C').values_list('extensions',
+                                                                                        flat=True))
+    c_extensions_list = []
+    for i in c_extensions:
+        c_extensions_list.extend(str(i).split(','))
+
+    cpp_extensions = list(ProgrammingLanguage.objects.filter(name__exact='C++').values_list('extensions',
+                                                                                            flat=True))
+    cpp_extensions_list = []
+    for i in cpp_extensions:
+        cpp_extensions_list.extend(str(i).split(','))
+
+    chash_extensions = list(ProgrammingLanguage.objects.filter(name__exact='C#').values_list('extensions',
+                                                                                             flat=True))
+    chash_extensions_list = []
+    for i in chash_extensions:
+        chash_extensions_list.extend(str(i).split(','))
+
+    other_extensions = list(ProgrammingLanguage.objects.filter(name__exact='Other').values_list('extensions',
+                                                                                               flat=True))
+    other_extensions_list = []
+    for i in other_extensions:
+        other_extensions_list.extend(str(i).split(','))
+
     try:
         python_users_files_count = File.objects.filter(author=user, extension__in=python_extensions_list).count()
     except File.DoesNotExist:

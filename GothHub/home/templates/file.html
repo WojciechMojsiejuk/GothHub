@@ -1,0 +1,19 @@
+{% extends "users_profile.html" %}
+{% block content_block %}
+    <div>
+    <form method="get" action={{ version.version_nr }}>
+    <select>
+    {% for version in versions reversed %}
+        <option value={{ version.version_nr }}>{{ version }}</option>
+    {% endfor %}
+    </select>
+        <button class="btn btn-primary" type="submit" value="pokaz">Pokaż</button>
+    </form>
+    </div>
+
+    <section class="container">
+        <div class="one">{{ file_content|linebreaks }}</div>
+        <div class="two"></div>
+    </section>
+
+{% endblock %}

@@ -1,11 +1,14 @@
-<h1>Statystyki użytkownika {{ username }}:</h1>
-<p>Liczba publicznych repozytoriów: {{ public_repositories }}</p>
-<p>Liczba prywatnych repozytoriów: {{ private_repositories }}</p>
-<p>W sumie utworzonych katalogów: {{ users_catalogs }}</p>
-<h2>:Języki programowania:</h2>
-<p>Python: {{ python_users_files_count }}</p>
-<p>Java: {{ java_users_files_count }}</p>
-<p>C: {{ c_users_files_count }}</p>
-<p>C++: {{ cpp_users_files_count }}</p>
-<p>C#: {{ chash_users_files_count }}</p>
-<p>Other: {{ other_users_files_count }}</p>
+{% extends "users_profile.html" %}
+{% block content_block %}
+    <h1>Statystyki użytkownika {{ username }}:</h1>
+    <p>Liczba publicznych repozytoriów: {{ public_repositories }}</p>
+    <p>Liczba prywatnych repozytoriów: {{ private_repositories }}</p>
+    <p>W sumie utworzonych katalogów: {{ users_catalogs }}</p>
+    <h2>:Języki programowania:</h2>
+    <p>Python: {{ python_users_files_count }}</p>
+    <p>Java: {{ java_users_files_count }}</p>
+    <p>C: {{ c_users_files_count }}</p>
+    <p>C++: {{ cpp_users_files_count }}</p>
+    <p>C#: {{ chash_users_files_count }}</p>
+    <p>Other: {{ other_users_files_count }}</p>
+{% endblock %}

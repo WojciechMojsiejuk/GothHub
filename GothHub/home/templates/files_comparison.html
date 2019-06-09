@@ -1,0 +1,25 @@
+{% extends "users_profile.html" %}
+{% block content_block %}
+    <div>
+    <form method="get" action={{ version.version_nr }}>
+    <select>
+    {% for version in versions reversed %}
+        <option value={{ version.version_nr }}>{{ version }}</option>
+    {% endfor %}
+    </select>
+    VS
+     <select>
+    {% for version in versions reversed %}
+        <option value={{ version.version_nr }}>{{ version }}</option>
+    {% endfor %}
+    </select>
+        <button class="btn btn-primary" type="submit" value="pokaz">Porównaj</button>
+    </form>
+    </div>
+
+    <section class="container">
+        <div class="one">{{ file_1_content|linebreaks }}</div>
+        <div class="two">{{ file_2_content|linebreaks }}</div>
+    </section>
+
+{% endblock %}

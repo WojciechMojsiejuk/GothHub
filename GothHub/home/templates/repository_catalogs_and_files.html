@@ -11,7 +11,7 @@
         {% for catalog in catalogs %}
           <a href="{{ path }}/{{ catalog.name }}"><h2>{{ catalog.name }}</h2></a>
           <form method="get" action="#">
-              <button class="btn btn-primary"" type="submit" value="edytuj">Edytuj</button>
+              <button class="btn btn-primary" type="submit" value="edytuj">Edytuj</button>
           </form>
           <form method="get" action="{{ path }}/{{ catalog.name }}/delete_catalog">
               <button class="btn btn-primary" type="submit" value="usun">Usun</button>
@@ -21,7 +21,8 @@
       {% if files is not None %}
       <h1>Files:</h1>
         {% for file in files %}
-          <h2>{{ file.file_name }}</h2>
+             <a href="{{ path }}/files/{{ file.file_name }}/latest"><h2>{{ file.file_name }}</h2></a>
+
           <button class="btn btn-primary" type="submit" value="edytuj">Edytuj</button>
           <button class="btn btn-primary" type="submit" value="usun">Usun</button>
         {% endfor %}

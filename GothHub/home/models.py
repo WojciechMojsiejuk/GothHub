@@ -33,8 +33,14 @@ class File(models.Model):
     catalog_Id = models.ForeignKey(Catalog, on_delete=models.CASCADE)
     dir = models.FileField(upload_to='files/')
 
+    def __str__(self):
+        return self.file_name
+
 
 class Version(models.Model):
     file_Id = models.ForeignKey(File, on_delete=models.CASCADE)
     version_nr = models.IntegerField()
     date_modified: models.DateTimeField(auto_now_add=True, blank=True)
+
+    def __str__(self):
+        return str(self.file_Id.file_name) + " Version: " + str(self.version_nr )

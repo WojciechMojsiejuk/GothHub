@@ -1,9 +1,10 @@
 from django.shortcuts import render
-from django.http import HttpResponseRedirect, Http404, HttpResponseForbidden, HttpResponse
+from django.http import HttpResponseRedirect, Http404, HttpResponseForbidden, HttpResponse, HttpResponseServerError, \
+    HttpResponseBadRequest
 from django.contrib.auth.models import User
 from django.contrib.auth.decorators import login_required
 
-from .models import Repository, Catalog, File
+from .models import Repository, Catalog, File, Version
 from .forms import RepoCreationForm, CatalogCreationForm
 from django.db import DatabaseError
 from django.contrib.auth.decorators import login_required
@@ -191,7 +192,7 @@ def catalogs_and_files(request, username, repository, path):
         catalogs = None
     try:
         files = File.objects.filter(author=user, repository_Id=searched_repository,
-                                    catalog_Id=parental_catalog)
+                                    catalog_Id=parental_catalog).values('file_name').distinct()
     except File.DoesNotExist:
         files = None
     path = '/user/' + user.username + '/' + searched_repository.name + '/' + path
@@ -265,10 +266,108 @@ def show_file(request, username, repository, path, filename, version):
                     except Catalog.DoesNotExist:
                         raise Http404("Catalog does not exist")
             # TODO: make function from the above (this code is repeated many times)
-            #Get file:
-            matching_files=File.objects.filter(file_name=filename, author=user,)
-            # your_media_root = settings.MEDIA_ROOT
-            # catalogs_path[-1]
+            # Get file:
+            try:
+                matching_files = File.objects.filter(
+                    file_name=filename,
+                    author=user,
+                    repository_Id=searched_repository,
+                    catalog_Id=parental_catalog)
+            except File.DoesNotExist:
+                raise Http404("File does not exists")
+            if version == "latest":
+                try:
+                    selected_file = Version.objects.filter(file_Id__in=matching_files).latest('version_nr')
+                except Version.DoesNotExist:
+                    return HttpResponseServerError("Versioning error")
+            else:
+                try:
+                    selected_file = Version.objects.get(file_Id_in=matching_files, version_nr=int(version))
+                except ValueError:
+                    HttpResponseBadRequest("Invalid version number")
+                except Version.DoesNotExist:
+                    return Http404("Version does not exist")
+
+            f = open('media/files/'+str(selected_file.file_Id.file_name), 'r')
+            file_content = f.read()
+            f.close()
+            context = {'file_content': file_content,
+                       'versions': Version.objects.filter(file_Id__in=matching_files),
+                       'username': user,
+                       'repository': searched_repository,
+                       'path': path}
+            return render(request, "file.html", context, content_type="text/html")
+        else:
+            raise Http404("Catalog does not exist")
+    else:
+        return HttpResponse('Unauthorized', status=401)
+
+
+@login_required
+def compare_files(request, username, repository, path, filename, version1, version2):
+    try:
+        user = User.objects.get(username=username)
+    except User.DoesNotExist:
+        raise Http404("User does not exist")
+    if request.user == user:
+        try:
+            searched_repository = Repository.objects.get(owner=user, name=repository)
+        except Repository.DoesNotExist:
+            raise Http404("Repository does not exist")
+        if path is not None:
+            catalogs_path = path.split('/')
+            for n, catalog in enumerate(catalogs_path):
+                if n == 0:
+                    try:
+                        parental_catalog = Catalog.objects.get(name=catalog, repository_Id=searched_repository,
+                                                               parent_catalog=None)
+                    except Catalog.DoesNotExist:
+                        raise Http404("Catalog does not exist")
+                else:
+                    try:
+                        parental_catalog = Catalog.objects.get(name=catalog, repository_Id=searched_repository,
+                                                               parent_catalog=parental_catalog)
+                    except Catalog.DoesNotExist:
+                        raise Http404("Catalog does not exist")
+            # Get files:
+            try:
+                matching_files = File.objects.filter(
+                    file_name=filename,
+                    author=user,
+                    repository_Id=searched_repository,
+                    catalog_Id=parental_catalog)
+            except File.DoesNotExist:
+                raise Http404("File does not exists")
+
+            # FILE 1
+            try:
+                selected_file_1 = Version.objects.get(file_Id__in=matching_files, version_nr=int(version1))
+            except ValueError:
+                HttpResponseBadRequest("Invalid version number")
+            except Version.DoesNotExist:
+                return Http404("Version does not exist")
+
+            # FILE 2
+            try:
+                selected_file_2 = Version.objects.get(file_Id__in=matching_files, version_nr=int(version2))
+            except ValueError:
+                HttpResponseBadRequest("Invalid version number")
+            except Version.DoesNotExist:
+                return Http404("Version does not exist")
+
+            f = open('media/files/'+str(selected_file_1.file_Id.file_name), 'r')
+            file_1_content = f.read()
+            f.close()
+            f = open('media/files/' + str(selected_file_2.file_Id.file_name), 'r')
+            file_2_content = f.read()
+            f.close()
+            context = {'file_1_content': file_1_content,
+                       'file_2_content': file_2_content,
+                       'versions': Version.objects.filter(file_Id__in=matching_files),
+                       'username': user,
+                       'repository': searched_repository,
+                       'path': path}
+            return render(request, "files_comparison.html", context, content_type="text/html")
         else:
             raise Http404("Catalog does not exist")
     else:

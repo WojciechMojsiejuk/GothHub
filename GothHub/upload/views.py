@@ -47,10 +47,13 @@ def upload_file(request, username, repository, path):
             for i in allowed_extensions_list:
                 allowed_extensions.extend(str(i).split(','))
             if ex in allowed_extensions:
-                # form.save()
-                # print(uploaded_file.dir.path)
                 try:
-                    previous_file = File.objects.get(file_name=dir.name, author=user, repository_Id=repo, catalog_Id=parental_catalog)
+                    previous_file = File.objects.get(
+                        file_name=dir.name,
+                        author=user,
+                        repository_Id=repo,
+                        catalog_Id=parental_catalog
+                    )
                     uploaded_file = File.objects.create(
                         author=user,
                         file_name=dir.name,
@@ -59,10 +62,10 @@ def upload_file(request, username, repository, path):
                         catalog_Id=parental_catalog,
                         dir=dir
                         )
-                    latest_version = Version.objects.get(file_Id=previous_file).values('version_nr')
+                    latest_version = Version.objects.get(file_Id=previous_file).version_nr
                     Version.objects.create(
                         file_Id=uploaded_file,
-                        version_nr=latest_version['version_nr'] + 1,
+                        version_nr=latest_version + 1,
                     )
 
                 except File.DoesNotExist:
