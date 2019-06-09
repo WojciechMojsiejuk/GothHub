@@ -24,7 +24,7 @@ def signup(request):
             user = form.save(commit=False)
             user.is_active = False
             user.save()
-            
+
             current_site = get_current_site(request)
             token = account_activation_token.make_token(user)
             message = Mail(
@@ -65,6 +65,8 @@ def index(request):
             if user is not None:
                 if user.profile.email_confirmed:
                     login(request, user)
+                    repositories = Repository.objects.filter(owner=user)
+                    request.session['repositories'] = [repository.name for repository in repositories]
                     return HttpResponseRedirect('/user/'+user.username)
                 else:
                     return HttpResponse('Nie potwierdzono adresu email podanego użytkownika')

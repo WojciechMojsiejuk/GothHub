@@ -12,11 +12,7 @@ from django.core.exceptions import ObjectDoesNotExist
 from django.conf import settings
 
 def home(request):
-    if request.user.is_authenticated is True:
-        logged_user = request.user
-        repositories = Repository.objects.filter(owner=logged_user)
-        return render(request, 'home.html', {'repositories': repositories})
-    return render(request, 'home.html', {'repositories': None})
+    return render(request, 'home.html', {})
 
 
 def user(request, username):
@@ -50,6 +46,8 @@ def add_repository(request, username):
                     form.add_error('name', "Repozytorium o takiej nazwie już istnieje")
                 except Repository.DoesNotExist:
                     Repository.objects.create(name=name, is_public=is_public, owner=user)
+                    repositories = Repository.objects.filter(owner=user)
+                    request.session['repositories'] = [repository.name for repository in repositories]
                     return HttpResponseRedirect('/')
         else:
             form = RepoCreationForm()
@@ -98,6 +96,8 @@ def delete_repository(request, username, repository):
         try:
             searched_repository = Repository.objects.get(owner=user, name=repository)
             searched_repository.delete()
+            repositories = Repository.objects.filter(owner=user)
+            request.session['repositories'] = [repository.name for repository in repositories]
         except Repository.DoesNotExist:
             raise Http404("Repository does not exists")
         return HttpResponseRedirect('/user/' + user.username)
