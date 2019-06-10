@@ -1,7 +1,7 @@
 {% extends "users_profile.html" %}
 {% block content_block %}
     <div>
-    <form method="get" action={{ version.version_nr }}>
+    <form method="post" action="{{ path }}">
     <select>
     {% for version in versions reversed %}
         <option value={{ version.version_nr }}>{{ version }}</option>
