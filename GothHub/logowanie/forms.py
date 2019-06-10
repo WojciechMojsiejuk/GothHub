@@ -28,6 +28,7 @@ class LoginForm(AuthenticationForm):
         super(LoginForm, self).__init__(*args, **kwargs)
         self.fields['username'].label = 'Nazwa użytkownika'
 
+
 class EditUsernameForm(forms.Form):
     username = forms.CharField(max_length=128, label="Nazwa użytkownika")
 

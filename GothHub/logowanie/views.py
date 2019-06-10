@@ -22,7 +22,7 @@ def signup(request):
         form = SignUpForm(request.POST)
         if form.is_valid():
             user = form.save(commit=False)
-            user.is_active = False
+            user.is_active = True
             user.save()
 
             current_site = get_current_site(request)
@@ -69,7 +69,10 @@ def index(request):
                     request.session['repositories'] = [repository.name for repository in repositories]
                     return HttpResponseRedirect('/user/'+user.username)
                 else:
-                    return HttpResponse('Nie potwierdzono adresu email podanego użytkownika')
+                    form.add_error('username', "Nie potwierdzono adresu email podanego użytkownika")
+                    return render(request, 'logowanie/signup.html', {
+                        'form': form,
+                    })
             else:
                 form = LoginForm()
                 return render(request, 'logowanie/signup.html', {
@@ -77,7 +80,6 @@ def index(request):
                     'error_message': 'Nie znaleziono użytkownika'
                 })
         else:
-            form = LoginForm()
             return render(request, 'logowanie/signup.html', {
                 'form': form,
                 'error_message': 'Nieprawidłowy login lub hasło'
@@ -104,8 +106,8 @@ def edit_profile(request, username):
                         except User.DoesNotExist:
                             logged_user.username = update_username
                             logged_user.save()
-                            return HttpResponse('Zmieniono dane')
-                        username_form.add_error('username', "Taki użytkownik istnieje")
+                            return HttpResponseRedirect('/user/' + update_username)
+                        username_form.add_error('username', 'Taki użytkownik istnieje')
                     password_form = EditPasswordForm()
                 elif 'change_password' in request.POST:
                     if password_form.is_valid():
@@ -115,8 +117,8 @@ def edit_profile(request, username):
                             update_password = password_form.cleaned_data.get('new_password1')
                             logged_user.set_password(update_password)
                             logged_user.save()
-                            return HttpResponse('Zmieniono dane')
-                        return HttpResponse('Podano niepoprawne hasło')
+                            return HttpResponseRedirect('/')
+                        password_form.add_error('password', 'Nieprawidłowe hasło')
                     username_form = EditUsernameForm(initial={'username':logged_user.username})
             else:
                 username_form = EditUsernameForm(initial={'username':logged_user.username})
@@ -135,7 +137,6 @@ def activate(request, uidb64, token):
         user = None
 
     if user is not None and account_activation_token.check_token(user, token):
-        user.is_active = True
         user.profile.email_confirmed = True
         user.save()
         login(request, user)
