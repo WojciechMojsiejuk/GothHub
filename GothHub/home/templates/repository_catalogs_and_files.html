@@ -10,31 +10,35 @@
       {% if catalogs is not None %}
         {% for catalog in catalogs %}
           <a href="{{ path }}/{{ catalog.name }}"><h2>{{ catalog.name }}</h2></a>
-          <form method="get" action="{{ path }}/{{ catalog.name }}/edit_catalog">
-              <button class="btn btn-primary" type="submit" value="edytuj">Edytuj</button>
-          </form>
-          <form method="get" action="{{ path }}/{{ catalog.name }}/delete_catalog">
-              <button class="btn btn-primary" type="submit" value="usun">Usun</button>
-          </form>
+          {% if username == request.user.username %}
+              <form method="get" action="{{ path }}/{{ catalog.name }}/edit_catalog">
+                  <button class="btn btn-primary" type="submit" value="edytuj">Edytuj</button>
+              </form>
+              <form method="get" action="{{ path }}/{{ catalog.name }}/delete_catalog">
+                  <button class="btn btn-primary" type="submit" value="usun">Usun</button>
+              </form>
+            {% endif %}
         {% endfor %}
       {% endif %}
       {% if files is not None %}
       <h1>Files:</h1>
         {% for file in files %}
              <a href="{{ path }}/files/{{ file.file_name }}/latest"><h2>{{ file.file_name }}</h2></a>
-
-          <button class="btn btn-primary" type="submit" value="edytuj">Edytuj</button>
-          <button class="btn btn-primary" type="submit" value="usun">Usun</button>
+             {% if username == request.user.username %}
+                 <button class="btn btn-primary" type="submit" value="edytuj">Edytuj</button>
+                 <button class="btn btn-primary" type="submit" value="usun">Usun</button>
+             {% endif %}
         {% endfor %}
       {% endif %}
-      {% if catalogs_path %}
-          <form method="get" action="{{ path }}/upload">
-              <button class="btn btn-primary" type="submit" value="dodajPlik">Dodaj plik</button>
+      {% if username == request.user.username %}
+          {% if catalogs_path %}
+              <form method="get" action="{{ path }}/upload">
+                  <button class="btn btn-primary" type="submit" value="dodajPlik">Dodaj plik</button>
+              </form>
+          {% endif %}
+          <form method="get" action="{{ path }}/add_catalog">
+              <button class="btn btn-primary" type="submit" value="dodajKatalog">Dodaj katalog</button>
           </form>
       {% endif %}
-      <form method="get" action="{{ path }}/add_catalog">
-          <button class="btn btn-primary" type="submit" value="dodajKatalog">Dodaj katalog</button>
-      </form>
-
     </div>
 {% endblock %}
