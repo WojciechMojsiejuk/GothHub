@@ -7,8 +7,15 @@ from django.core.management import call_command
 class UploadPageTest(TestCase):
 
     def setUp(self):
+        # user which repositories are tested
+        self.user = User.objects.create(username="JanKowalski")
+        self.user.set_password('12345')
+        self.user.save()
+        # other user
+        self.user2 = User.objects.create(username="JanNowak")
+        self.user2.set_password('54321')
+        self.user2.save()
+
         self.client = Client()
-        repository = Repository.objects.create(name="Repozytorium", is_public=True)
-        user = User.objects.create(username="User")
-        catalog = Catalog.objects.create(name="Catalog", repository_Id=repository, parent_catalog=None)
-        call_command("loaddata", "' + 'programming_languages_definition.json' + '", verbosity=0)
+        self.public_repository = Repository.objects.create(name="PubliczneRepozytoriumJanka", owner=self.user,
+                                                           is_public=True)

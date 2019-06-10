@@ -10,6 +10,7 @@ from django.core.exceptions import MultipleObjectsReturned
 import os
 
 
+# TODO: upload_file should  check if user is an owner of a repository
 def upload_file(request, username, repository, path):
     user = request.user
     repo = Repository.objects.get(owner=user, name=repository)
@@ -81,6 +82,7 @@ def upload_file(request, username, repository, path):
                         file_Id=uploaded_file,
                         version_nr=1,
                     )
+                    # TODO: change it to redirect to catalog view
                     return HttpResponse('gut')
                 except MultipleObjectsReturned:
                     try:
