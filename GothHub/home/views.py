@@ -9,7 +9,7 @@ from .forms import RepoCreationForm, CatalogCreationForm, ShowFileForm
 from django.db import DatabaseError
 from django.contrib.auth.decorators import login_required
 from django.core.exceptions import ObjectDoesNotExist
-from django.conf import settings
+
 
 
 def home(request):
