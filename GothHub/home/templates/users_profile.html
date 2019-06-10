@@ -6,7 +6,12 @@
   {% if repositories_owner is not None %}
     {% for repository in repositories_owner %}
       <a href="/user/{{ username }}/{{ repository.name }}"><h2>{{ repository.name }}</h2></a>
-      <p>{{ repository.is_public }}</p>
+      {% if repository.is_public == True  %}
+        <p> publiczne </p>
+      {% else %}
+        <p> prywatne </p>
+      {% endif %}
+
       {% if username == user.username %}
       <div class="repo">
           <form method="get" action="/user/{{ request.user.username }}/{{ repository.name }}/edit_repository">
