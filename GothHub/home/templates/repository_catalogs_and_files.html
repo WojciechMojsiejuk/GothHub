@@ -1,6 +1,6 @@
 {% extends "users_profile.html" %}
 {% block content_block %}
-    <a href="/user/{{ username }}">{{ username }}</a>
+    {% if username != user.username %}<a href="/user/{{ username }}">{{ username }}</a>{% endif %}
     <a href="/user/{{ username }}/{{ repository.name }}">{{repository.name}}</a>
     {% for name, url in catalogs_path %}
         / <a href="{{ url }}">{{ name }}</a>
@@ -15,18 +15,20 @@
             <div class="col-md-10">
               <a href="{{ path }}/{{ catalog.name }}"><h2>{{ catalog.name }}</h2></a>
             </div>
-            {% if username == request.user.username %}
                 <div class="col-md-1">
+                  {% if username == user.username %}
                   <form method="get" action="{{ path }}/{{ catalog.name }}/edit_catalog">
                       <button class="btn btn-light" type="submit" value="edytuj">Edytuj</button>
                   </form>
+                  {% endif %}
                 </div>
                 <div class="col-md-1">
+                  {% if username == user.username %}
                   <form method="get" action="{{ path }}/{{ catalog.name }}/delete_catalog">
                       <button class="btn btn-light" type="submit" value="usun">Usuń</button>
                   </form>
+                  {% endif %}
                 </div>
-            {% endif %}
             </div>
         {% endfor %}
       </ul>
@@ -41,7 +43,7 @@
              {% endif %}
         {% endfor %}
       {% endif %}
-      {% if username == request.user.username %}
+      {% if username == user.username %}
           {% if catalogs_path %}
               <form method="get" action="{{ path }}/upload">
                   <button class="btn btn-primary" type="submit" value="dodajPlik">Dodaj plik</button>

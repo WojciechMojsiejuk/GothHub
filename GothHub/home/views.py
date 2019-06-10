@@ -26,7 +26,7 @@ def user(request, username):
         logged_user = request.user
         if logged_user == owner:
             repositories_owner = Repository.objects.filter(owner=owner)
-    return render(request, 'users_profile.html', {'username': username,
+    return render(request, 'users_profile.html', {'username': owner.username,
                                                   'repositories_owner': repositories_owner})
 
 
@@ -108,7 +108,7 @@ def repository(request, username, repository):
         catalogs = None
     return render(request, 'repository_catalogs_and_files.html',
                   {
-                      'username': user,
+                      'username': user.username,
                       'repository': searched_repository,
                       'path': "/user/" + user.username + '/' + searched_repository.name,
                       'catalogs': catalogs
