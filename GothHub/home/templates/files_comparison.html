@@ -17,9 +17,16 @@
     </form>
     </div>
 
-    <section class="container">
-        <div class="one">{{ file_1_content|linebreaks }}</div>
-        <div class="two">{{ file_2_content|linebreaks }}</div>
-    </section>
+
+    <div class="container">
+      <div class="row">
+         <div class="col-md-6">
+            {{ file_1_content|linebreaks }}
+         </div>
+         <div class="col-md-6">
+           {{ file_2_content|linebreaks }}
+         </div>
+      </div>
+    </div>
 
 {% endblock %}
