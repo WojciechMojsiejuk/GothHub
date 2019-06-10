@@ -360,57 +360,31 @@ def show_file(request, username, repository, path, filename, version):
                     catalog_Id=parental_catalog)
             except File.DoesNotExist:
                 raise Http404("File does not exists")
-            if request.method == 'POST':
-                form = ShowFileForm(request.POST)
-                if form.is_valid():
-                    new_version = form.cleaned_data.get('version_nr')
-                    try:
-                        selected_file = Version.objects.get(file_Id__in=matching_files, version_nr=int(new_version))
-                    except ValueError:
-                        HttpResponseBadRequest("Invalid version number")
-                    except Version.DoesNotExist:
-                        return Http404("Version does not exist")
-                    f = open('media/' + str(selected_file.file_Id.dir), 'r')
-                    file_content = f.read()
-                    print(file_content)
-                    f.close()
-                    context = {'file_content': file_content,
-                               'versions': Version.objects.filter(file_Id__in=matching_files),
-                               'username': user,
-                               'repository': searched_repository,
-                               'form': form,
-                               'path': path}
-                    return render(request, "file.html", context, content_type="text/html")
-                return HttpResponse("ZlyForm")
+            if version == "latest":
+                try:
+                    selected_file = Version.objects.filter(file_Id__in=matching_files).latest('version_nr')
+                except Version.DoesNotExist:
+                    return HttpResponseServerError("Versioning error")
             else:
-                print("Test")
-                form = ShowFileForm(initial={'version_nr.widget.choices': Version.objects.filter(file_Id__in=matching_files)})
-                if version == "latest":
-                    try:
-                        selected_file = Version.objects.filter(file_Id__in=matching_files).latest('version_nr')
-                        print(selected_file)
-                    except Version.DoesNotExist:
-                        return HttpResponseServerError("Versioning error")
-                else:
-                    try:
-                        selected_file = Version.objects.get(file_Id__in=matching_files, version_nr=int(version))
-                    except ValueError:
-                        HttpResponseBadRequest("Invalid version number")
-                    except Version.DoesNotExist:
-                        return Http404("Version does not exist")
+                try:
+                    selected_file = Version.objects.get(file_Id__in=matching_files, version_nr=int(version))
+                except ValueError:
+                    HttpResponseBadRequest("Invalid version number")
+                except Version.DoesNotExist:
+                    return Http404("Version does not exist")
 
-                f = open('media/' + str(selected_file.file_Id.dir), 'r')
-                file_content = f.read()
-                print(file_content)
-                f.close()
-                context = {'file_content': file_content,
-                           'file_name': selected_file.file_Id.file_name,
-                           'version': version,
-                           'username': user,
-                           'repository': searched_repository,
-                           'form': form,
-                           'path': path}
-                return render(request, "file.html", context, content_type="text/html")
+            f = open('media/' + str(selected_file.file_Id.dir), 'r')
+            file_content = f.read()
+            print(file_content)
+            f.close()
+            context = {'file_content': file_content,
+                       'file_name': selected_file.file_Id.file_name,
+                       'file': selected_file,
+                       'versions': Version.objects.filter(file_Id__in=matching_files),
+                       'username': user,
+                       'repository': searched_repository,
+                       'path': path}
+            return render(request, "file.html", context, content_type="text/html")
         else:
             raise Http404("Katalog nie istnieje")
     else:
