@@ -15,6 +15,12 @@ class SignUpForm(UserCreationForm):
         labels = {
             'username' : 'Nazwa użytkownika',
         }
+    def __init__(self, *args, **kwargs):
+        super(SignUpForm, self).__init__(*args, **kwargs)
+        self.fields['username'].help_text = 'Podaj nazwę składającą się jedynie z liter, cyfr i @, ., +, -, _'
+        self.fields['email'].help_text = 'Podaj adres e-mail'
+        self.fields['password1'].help_text = 'Podaj hasło składające się z min. 8 znaków - liter i cyfr'
+        self.fields['password2'].help_text = 'Powtórz hasło'
 
 
 class LoginForm(AuthenticationForm):

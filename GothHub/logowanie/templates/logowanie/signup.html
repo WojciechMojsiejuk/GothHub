@@ -3,42 +3,50 @@
   <head>
     <meta charset="utf-8">
     <title>GothHub login</title>
-    <link rel="stylesheet" href="{% static 'css/style.css' %}?{% now "U" %}">
     <link rel="shortcut icon" href="{%  static 'favicon.ico' %}">
-    
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" integrity="sha384-1q8mTJOASx8j1Au+a5WDVnPi2lkFfwwEAa8hDDdjZlpLegxhjVME1fgjWPGmkzs7" crossorigin="anonymous">
+    <!--Google font-->
+    <link href="https://fonts.googleapis.com/css?family=K2D:300,400,500,700,800" rel="stylesheet">
+    <link rel="stylesheet" href="{% static 'css/bootstrap.css' %}?{% now "U" %}">
 
   </head>
   <body>
-
-  	<div class="logo">
-  		<h1>GothHub</h1>
-  	</div>
-
-  	<div class="login-box">
-      <!-- tu ponizej Pawla kod, nwm jak go stad wywalic zeby byl przekierowywany z innego pliku -->
-      {% block content %}
-        {% if error_message %}<p style="color: red"><strong>{{error_message}}</strong></p>{% endif %}
-        {% if form.login %}<h2>Logowanie</h2>
-        {% else %}<h2>Rejestracja</h2>{% endif %}
-        <form method="post">
-          {% csrf_token %}
-          {% for field in form %}
-            <p>
-              {{ field.label_tag }}<br>
-              {{ field }}
-              <br>
-              {% if field.help_text %}
-                <small>{{ field.help_text }}</small>
-              {% endif %}
-              {% for error in field.errors %}
-                <p style="color: red">{{ error }}</p>
+    <div class="container">
+      <div class="row">
+        <div class="col-md-12 text-center">
+          <br/><br/>
+          <h1><p style="color:yellow;">GothHub</p></h1>
+          {% block content %}
+            {% if error_message %}<p style="color: red"><strong>{{error_message}}</strong></p>{% endif %}
+            {% if form.login %}<h2>Logowanie</h2>
+            {% else %}<h2>Rejestracja</h2>{% endif %}
+            <form method="post">
+              {% csrf_token %}
+              {% for field in form %}
+                <p>
+                  {{ field.label_tag }}<br>
+                  {{ field }}
+                  <br>
+                  {% if field.help_text %}
+                    <small>{{ field.help_text }}</small>
+                  {% endif %}
+                  {% for error in field.errors %}
+                    <p style="color: red">{{ error }}</p>
+                  {% endfor %}
+                </p>
               {% endfor %}
-            </p>
-          {% endfor %}
-          <button type="submit">{% if form.login %}Zaloguj{% else %}Zarejestruj{% endif %}</button>
-        </form>
-      {% endblock %}
-  	</div>
+              <button type="submit">{% if form.login %}Zaloguj{% else %}Zarejestruj{% endif %}</button>
+            </form>
+          {% endblock %}
+        </div>
+      </div>
+    </div>
+
+
+
+
 
   </body>
 </html>

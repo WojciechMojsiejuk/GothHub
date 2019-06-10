@@ -15,7 +15,6 @@
             <div class="col-md-10">
               <a href="{{ path }}/{{ catalog.name }}"><h2>{{ catalog.name }}</h2></a>
             </div>
-            {% if username == request.user.username %}
                 <div class="col-md-1">
                   <form method="get" action="{{ path }}/{{ catalog.name }}/edit_catalog">
                       <button class="btn btn-light" type="submit" value="edytuj">Edytuj</button>
@@ -26,7 +25,6 @@
                       <button class="btn btn-light" type="submit" value="usun">Usuń</button>
                   </form>
                 </div>
-            {% endif %}
             </div>
         {% endfor %}
       </ul>
