@@ -404,6 +404,8 @@ def show_file(request, username, repository, path, filename, version):
                 print(file_content)
                 f.close()
                 context = {'file_content': file_content,
+                           'file_name': selected_file.file_Id.file_name,
+                           'version': version,
                            'username': user,
                            'repository': searched_repository,
                            'form': form,
@@ -476,6 +478,9 @@ def compare_files(request, username, repository, path, filename, version1, versi
             f.close()
             context = {'file_1_content': file_1_content,
                        'file_2_content': file_2_content,
+                       'file_name': selected_file_1.file_Id.file_name,
+                       'version_1':version1,
+                       'version_2':version2,
                        'versions': Version.objects.filter(file_Id__in=matching_files),
                        'username': user,
                        'repository': searched_repository,

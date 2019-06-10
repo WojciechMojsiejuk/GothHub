@@ -1,21 +1,25 @@
 {% extends "users_profile.html" %}
 {% block content_block %}
     <div>
-    <form method="post" action="{{ path }}">
-    <select>
-    {% for version in versions reversed %}
-        <option value={{ version.version_nr }}>{{ version }}</option>
+    <form action="{{version1}}/{{version2}}" method="post">
+    <select name="first_file">
+    {% for version1 in versions reversed %}
+        <option value={{ version1.version_nr }}>{{ version1 }}</option>
     {% endfor %}
     </select>
     VS
-     <select>
-    {% for version in versions reversed %}
-        <option value={{ version.version_nr }}>{{ version }}</option>
+     <select name="second_file">
+    {% for version2 in versions reversed %}
+        <option value={{ version2.version_nr }}>{{ version2 }}</option>
     {% endfor %}
     </select>
         <button class="btn btn-primary" type="submit" value="pokaz">Porównaj</button>
     </form>
+    <form method="get" action="/user/{{ username }}/{{ repository }}/{{ path }}/files/{{file_name}}/{{ version_1 }}">
+            <button class="btn btn-light" type="submit" value="Powrot">Powrót</button>
+    </form>
     </div>
+
 
 
     <div class="container">
