@@ -10,7 +10,6 @@ from django.contrib.auth.decorators import login_required
 
 import os
 
-
 # TODO: upload_file should  check if user is an owner of a repository
 @login_required
 def upload_file(request, username, repository, path):
@@ -90,7 +89,7 @@ def upload_file(request, username, repository, path):
                             version_nr=1,
                         )
                         # TODO: change it to redirect to catalog view
-                        return HttpResponse('gut')
+                        return redirect('/user/' + username + '/' + repository + '/' + path)
                     except MultipleObjectsReturned:
                         try:
                             older_files = File.objects.filter(file_name=dir.name, author=user, repository_Id=repo, catalog_Id=parental_catalog)
