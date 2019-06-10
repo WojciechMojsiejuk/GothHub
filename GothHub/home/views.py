@@ -49,7 +49,7 @@ def add_repository(request, username):
                     Repository.objects.create(name=name, is_public=is_public, owner=user)
                     repositories = Repository.objects.filter(owner=user)
                     request.session['repositories'] = [repository.name for repository in repositories]
-                    return HttpResponseRedirect('/')
+                    return HttpResponseRedirect('/user/' + username)
         else:
             form = RepoCreationForm()
         return render(request, 'repository.html', {'form': form})
