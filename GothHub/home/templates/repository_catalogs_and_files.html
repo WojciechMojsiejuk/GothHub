@@ -29,13 +29,24 @@
         {% endfor %}
       </ul>
       {% endif %}
-      {% if files is not None %}
       <h1>Pliki:</h1>
+      {% if files is not None %}
+
         {% for file in files %}
+
+        <div class="row">
+         <div class="col-md-10">
              <a href="{{ path }}/files/{{ file.file_name }}/latest"><h2>{{ file.file_name }}</h2></a>
+             </div>
              {% if username == request.user.username %}
+
+           <div class="col-md-1">
                  <button class="btn btn-primary" type="submit" value="edytuj">Edytuj</button>
+               </div>
+               <div class="col-md-1">
                  <button class="btn btn-primary" type="submit" value="usun">Usuń</button>
+               </div>
+               </div>
              {% endif %}
         {% endfor %}
       {% endif %}
