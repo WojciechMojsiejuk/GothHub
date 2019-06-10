@@ -359,11 +359,13 @@ def show_file(request, username, repository, path, filename, version):
                     author=user,
                     repository_Id=searched_repository,
                     catalog_Id=parental_catalog)
+                print(matching_files)
             except File.DoesNotExist:
                 raise Http404("File does not exists")
             if version == "latest":
                 try:
                     selected_file = Version.objects.filter(file_Id__in=matching_files).latest('version_nr')
+                    print(selected_file)
                 except Version.DoesNotExist:
                     return HttpResponseServerError("Versioning error")
             else:
@@ -374,8 +376,9 @@ def show_file(request, username, repository, path, filename, version):
                 except Version.DoesNotExist:
                     return Http404("Version does not exist")
 
-            f = open('media/files/' + str(selected_file.file_Id.file_name), 'r')
+            f = open('media/'+str(selected_file.file_Id.dir), 'r')
             file_content = f.read()
+            print(file_content)
             f.close()
             context = {'file_content': file_content,
                        'versions': Version.objects.filter(file_Id__in=matching_files),
@@ -422,6 +425,7 @@ def compare_files(request, username, repository, path, filename, version1, versi
                     author=user,
                     repository_Id=searched_repository,
                     catalog_Id=parental_catalog)
+                print(matching_files)
             except File.DoesNotExist:
                 raise Http404("File does not exists")
 
@@ -441,10 +445,10 @@ def compare_files(request, username, repository, path, filename, version1, versi
             except Version.DoesNotExist:
                 return Http404("Version does not exist")
 
-            f = open('media/files/' + str(selected_file_1.file_Id.file_name), 'r')
+            f = open('media/'+str(selected_file_1.file_Id.dir), 'r')
             file_1_content = f.read()
             f.close()
-            f = open('media/files/' + str(selected_file_2.file_Id.file_name), 'r')
+            f = open('media/'+str(selected_file_2.file_Id.dir), 'r')
             file_2_content = f.read()
             f.close()
             context = {'file_1_content': file_1_content,
