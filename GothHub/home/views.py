@@ -262,10 +262,59 @@ def delete_catalog(request, username, repository, path):
             raise Http404("Catalog does not exist")
 
         parental_catalog.delete()
-        return HttpResponseRedirect(
-            '/user/' + str(user) + "/" + str(searched_repository.name) + "/" + path[:-(len(catalogs_path[-1])+1)])
+        if len(catalogs_path) != 1:
+            new_path = '/user/' + username + '/' + searched_repository.name + '/' + path[:-(len(catalogs_path[-1])+1)]
+            return HttpResponseRedirect(new_path)
+        else:
+            new_path = '/user/' + username + '/' + searched_repository.name
+            return HttpResponseRedirect(new_path)
     else:
         return HttpResponse('Unauthorized', status=401)
+
+
+@login_required
+def edit_catalog(request, username, repository, path):
+    try:
+        user = User.objects.get(username=username)
+    except User.DoesNotExist:
+        raise Http404("User does not exist")
+    if request.user == user:
+        try:
+            searched_repository = Repository.objects.get(name=repository, owner=user)
+        except Repository.DoesNotExist:
+            raise Http404("Repository does not exist")
+        if path is not None:
+            catalogs_path = path.split('/')
+            for n, catalog in enumerate(catalogs_path):
+                if n == 0:
+                    try:
+                        parental_catalog = Catalog.objects.get(name=catalog, repository_Id=searched_repository, parent_catalog=None)
+                    except Catalog.DoesNotExist:
+                        raise Http404("Catalog does not exist")
+                else:
+                    try:
+                        parental_catalog = Catalog.objects.get(name=catalog, repository_Id=searched_repository, parent_catalog=parental_catalog)
+                    except Catalog.DoesNotExist:
+                        raise Http404("Catalog does not exist")
+        else:
+            raise Http404("Catalog does not exist")
+        if request.method == 'POST':
+            form = CatalogCreationForm(request.POST)
+            if form.is_valid():
+                name = form.cleaned_data.get('name')
+                parental_catalog.name = name
+                parental_catalog.save()
+                if len(catalogs_path) != 1:
+                    new_path = '/user/' + username + '/' + searched_repository.name + '/' + path[:-(len(catalogs_path[-1])+1)]
+                    return HttpResponseRedirect(new_path)
+                else:
+                    new_path = '/user/' + username + '/' + searched_repository.name
+                    return HttpResponseRedirect(new_path)
+        else:
+            form = CatalogCreationForm(initial={'name' : parental_catalog.name})
+        return render(request, 'catalog.html', {'form': form})
+    else:
+        return HttpResponseForbidden('You are not authorized to edit catalog')
 
 
 @login_required

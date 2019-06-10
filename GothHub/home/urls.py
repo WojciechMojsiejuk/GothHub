@@ -20,5 +20,6 @@ urlpatterns = [
     path('user/<str:username>/<str:repository>/<path:path>/files/<str:filename>/<str:version>', views.show_file, name='show_file'),
     path('user/<str:username>/<str:repository>/<path:path>/files/<str:filename>/<str:version1>/<str:version2>', views.compare_files, name='compare_files'),
     path('user/<str:username>/<str:repository>/<path:path>/delete_catalog', views.delete_catalog, name='delete_catalog'),
+    path('user/<str:username>/<str:repository>/<path:path>/edit_catalog', views.edit_catalog, name='edit_catalog'),
     path('user/<str:username>/<str:repository>/<path:path>', views.catalogs_and_files, name='catalogs_and_files')
 ]

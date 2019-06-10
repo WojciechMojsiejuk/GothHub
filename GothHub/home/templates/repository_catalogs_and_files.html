@@ -10,7 +10,7 @@
       {% if catalogs is not None %}
         {% for catalog in catalogs %}
           <a href="{{ path }}/{{ catalog.name }}"><h2>{{ catalog.name }}</h2></a>
-          <form method="get" action="#">
+          <form method="get" action="{{ path }}/{{ catalog.name }}/edit_catalog">
               <button class="btn btn-primary" type="submit" value="edytuj">Edytuj</button>
           </form>
           <form method="get" action="{{ path }}/{{ catalog.name }}/delete_catalog">
