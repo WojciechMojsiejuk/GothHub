@@ -3,13 +3,14 @@
     <div>
         <form method="post" action="2">
         {% csrf_token %}
-            <select>
-                {% for version in versions reversed %}
-                    <option value={{ version.version_nr }}
-                    {% if version == current_version %}selected="selected"{% endif %}>
-                        {{ version }}</option>
-                {% endfor %}
-            </select>
+        {{ form }}
+{#            <select>#}
+{#                {% for version in versions reversed %}#}
+{#                    <option value= {{ version.version_nr }} >#}
+{#                    {% if version == current_version %}selected="selected"{% endif %}#}
+{#                        </option>#}
+{#                {% endfor %}#}
+{#            </select>#}
             <input type="submit" value="Select">
         </form>
     </div>

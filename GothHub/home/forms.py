@@ -37,7 +37,7 @@ class FileUploadForm(forms.ModelForm):
 
 
 class ShowFileForm(forms.ModelForm):
-    version_nr = forms.IntegerField()
+    version_nr = forms.ChoiceField()
 
     class Meta:
         model = Version

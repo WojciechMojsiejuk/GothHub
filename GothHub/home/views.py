@@ -337,40 +337,54 @@ def show_file(request, username, repository, path, filename, version):
         raise Http404("Repozytorium nie istnieje")
     if request.user == user or (request.user != user and searched_repository.is_public is True):
         if path is not None:
+            catalogs_path = path.split('/')
+            for n, catalog in enumerate(catalogs_path):
+                if n == 0:
+                    try:
+                        parental_catalog = Catalog.objects.get(name=catalog, repository_Id=searched_repository,
+                                                               parent_catalog=None)
+                    except Catalog.DoesNotExist:
+                        raise Http404("Catalog does not exist")
+                else:
+                    try:
+                        parental_catalog = Catalog.objects.get(name=catalog, repository_Id=searched_repository,
+                                                               parent_catalog=parental_catalog)
+                    except Catalog.DoesNotExist:
+                        raise Http404("Catalog does not exist")
+            # Get file:
+            try:
+                matching_files = File.objects.filter(
+                    file_name=filename,
+                    author=user,
+                    repository_Id=searched_repository,
+                    catalog_Id=parental_catalog)
+            except File.DoesNotExist:
+                raise Http404("File does not exists")
             if request.method == 'POST':
                 form = ShowFileForm(request.POST)
                 if form.is_valid():
-                    version = form.cleaned_data.get('version_nr')
-                    print("WERSJA")
-                    print(version)
-
+                    new_version = form.cleaned_data.get('version_nr')
+                    try:
+                        selected_file = Version.objects.get(file_Id__in=matching_files, version_nr=int(new_version))
+                    except ValueError:
+                        HttpResponseBadRequest("Invalid version number")
+                    except Version.DoesNotExist:
+                        return Http404("Version does not exist")
+                    f = open('media/' + str(selected_file.file_Id.dir), 'r')
+                    file_content = f.read()
+                    print(file_content)
+                    f.close()
+                    context = {'file_content': file_content,
+                               'versions': Version.objects.filter(file_Id__in=matching_files),
+                               'username': user,
+                               'repository': searched_repository,
+                               'form': form,
+                               'path': path}
+                    return render(request, "file.html", context, content_type="text/html")
+                return HttpResponse("ZlyForm")
             else:
-                ShowFileForm()
-                catalogs_path = path.split('/')
-                for n, catalog in enumerate(catalogs_path):
-                    if n == 0:
-                        try:
-                            parental_catalog = Catalog.objects.get(name=catalog, repository_Id=searched_repository,
-                                                                   parent_catalog=None)
-                        except Catalog.DoesNotExist:
-                            raise Http404("Catalog does not exist")
-                    else:
-                        try:
-                            parental_catalog = Catalog.objects.get(name=catalog, repository_Id=searched_repository,
-                                                                   parent_catalog=parental_catalog)
-                        except Catalog.DoesNotExist:
-                            raise Http404("Catalog does not exist")
-                # TODO: make function from the above (this code is repeated many times)
-                # Get file:
-                try:
-                    matching_files = File.objects.filter(
-                        file_name=filename,
-                        author=user,
-                        repository_Id=searched_repository,
-                        catalog_Id=parental_catalog)
-                    print(matching_files)
-                except File.DoesNotExist:
-                    raise Http404("File does not exists")
+                print("Test")
+                form = ShowFileForm(initial={'version_nr.widget.choices': Version.objects.filter(file_Id__in=matching_files)})
                 if version == "latest":
                     try:
                         selected_file = Version.objects.filter(file_Id__in=matching_files).latest('version_nr')
@@ -390,12 +404,11 @@ def show_file(request, username, repository, path, filename, version):
                 print(file_content)
                 f.close()
                 context = {'file_content': file_content,
-                           'versions': Version.objects.filter(file_Id__in=matching_files),
                            'username': user,
                            'repository': searched_repository,
+                           'form': form,
                            'path': path}
                 return render(request, "file.html", context, content_type="text/html")
-            return
         else:
             raise Http404("Katalog nie istnieje")
     else:
