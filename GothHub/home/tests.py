@@ -417,8 +417,8 @@ class DeleteCatalogPage(TestCase):
                                         str(self.public_repository.name) + '/' +
                                         str(self.users_parental_catalog) + '/' +
                                         str(self.users_catalog) + '/delete_catalog')
-        # Check that the response is 401 = unauthorized.
-        self.assertEqual(self.response.status_code, 401)
+        # Check that the response is 403 = unauthorized.
+        self.assertEqual(self.response.status_code, 403)
 
     def test_user_delete_catalog(self):
         self.client.login(username='JanNowak', password='54321')
@@ -557,7 +557,7 @@ class ShowFilePage(TestCase):
                                         '/' + str(self.users_priv_catalog) +
                                         '/files/' + str(self.users_file_3.file_name) + '/' +
                                         str(self.users_file_3_version.version_nr))
-        self.assertEqual(self.response.status_code, 401)
+        self.assertEqual(self.response.status_code, 403)
 
     def test_latest_version_files_1_and_2(self):
         self.client.login(username='JanKowalski', password='12345')

@@ -11,6 +11,11 @@ class RepoCreationForm(forms.Form):
         model = Repository
         fields = ('name', 'is_public')
 
+    def __init__(self, *args, **kwargs):
+        super(RepoCreationForm, self).__init__(*args, **kwargs)
+        self.fields['name'].label = 'Nazwa'
+        self.fields['is_public'].label = 'Publiczne'
+
 
 class CatalogCreationForm(forms.Form):
     name = forms.CharField(max_length=128)
@@ -18,6 +23,10 @@ class CatalogCreationForm(forms.Form):
     class Meta:
         model = Catalog
         fields = ('name')
+
+    def __init__(self, *args, **kwargs):
+        super(CatalogCreationForm, self).__init__(*args, **kwargs)
+        self.fields['name'].label = 'Nazwa'
 
 
 class FileUploadForm(forms.ModelForm):
