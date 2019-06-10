@@ -472,3 +472,46 @@ def compare_files(request, username, repository, path, filename, version1, versi
             raise Http404("Catalog does not exist")
     else:
         return HttpResponse('Unauthorized', status=401)
+
+
+@login_required
+def delete_file(request, username, repository, path, filename):
+    try:
+        user = User.objects.get(username=username)
+    except User.DoesNotExist:
+        raise Http404("User does not exist")
+    try:
+        searched_repository = Repository.objects.get(owner=user, name=repository)
+    except Repository.DoesNotExist:
+        raise Http404("Repository does not exist")
+    if request.user == user:
+        if path is not None:
+            catalogs_path = path.split('/')
+            for n, catalog in enumerate(catalogs_path):
+                if n == 0:
+                    try:
+                        parental_catalog = Catalog.objects.get(name=catalog, repository_Id=searched_repository,
+                                                               parent_catalog=None)
+                    except Catalog.DoesNotExist:
+                        raise Http404("Catalog does not exist")
+                else:
+                    try:
+                        parental_catalog = Catalog.objects.get(name=catalog, repository_Id=searched_repository,
+                                                               parent_catalog=parental_catalog)
+                    except Catalog.DoesNotExist:
+                        raise Http404("Catalog does not exist")
+            try:
+                matching_files = File.objects.filter(
+                    file_name=filename,
+                    author=user,
+                    repository_Id=searched_repository,
+                    catalog_Id=parental_catalog)
+                matching_files.delete()
+                new_path = '/user/' + username + '/' + repository + '/' + path
+                return HttpResponseRedirect(new_path)
+            except File.DoesNotExist:
+                raise Http404("File does not exists")
+        else:
+            raise Http404("Catalog does not exist")
+    else:
+        return HttpResponse('Unauthorized', status=401)
