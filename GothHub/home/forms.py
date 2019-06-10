@@ -1,6 +1,6 @@
 from django import forms
 
-from .models import Repository, Catalog, File
+from .models import Repository, Catalog, File, Version
 
 
 class RepoCreationForm(forms.Form):
@@ -34,3 +34,11 @@ class FileUploadForm(forms.ModelForm):
     class Meta:
         model = File
         fields = ('dir', )
+
+
+class ShowFileForm(forms.ModelForm):
+    version_nr = forms.ChoiceField()
+
+    class Meta:
+        model = Version
+        fields = ('version_nr',)

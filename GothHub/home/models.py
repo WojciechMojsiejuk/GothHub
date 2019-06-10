@@ -1,5 +1,6 @@
 from django.db import models
-# TO DO: check this import
+from django.db.models.signals import post_delete
+from django.dispatch import receiver
 from logowanie.models import User
 
 
@@ -37,10 +38,15 @@ class File(models.Model):
         return self.file_name
 
 
+@receiver(post_delete, sender=File)
+def file_delete(sender, instance, **kwargs):
+    instance.dir.delete(False)
+
+
 class Version(models.Model):
     file_Id = models.ForeignKey(File, on_delete=models.CASCADE)
     version_nr = models.IntegerField()
     date_modified: models.DateTimeField(auto_now_add=True, blank=True)
 
     def __str__(self):
-        return str(self.file_Id.file_name) + " Version: " + str(self.version_nr )
+        return str(self.file_Id.file_name) + " Version: " + str(self.version_nr)

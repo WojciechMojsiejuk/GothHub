@@ -1,14 +1,21 @@
 {% extends "users_profile.html" %}
 {% block content_block %}
     <div>
-    <form method="get" action={{ version.version_nr }}>
-    <select>
-    {% for version in versions reversed %}
-        <option value={{ version.version_nr }}>{{ version }}</option>
-    {% endfor %}
-    </select>
-        <button class="btn btn-primary" type="submit" value="pokaz">Pokaż</button>
-    </form>
+        <form method="post" action="2">
+        {% csrf_token %}
+        {{ form }}
+{#            <select>#}
+{#                {% for version in versions reversed %}#}
+{#                    <option value= {{ version.version_nr }} >#}
+{#                    {% if version == current_version %}selected="selected"{% endif %}#}
+{#                        </option>#}
+{#                {% endfor %}#}
+{#            </select>#}
+            <input type="submit" value="Select">
+        </form>
+        <form method="get" action="{{ version }}/{{ version }}">
+            <button class="btn btn-light" type="submit" value="Porownaj">Porównaj wersje</button>
+        </form>
     </div>
 
     <section class="container">
