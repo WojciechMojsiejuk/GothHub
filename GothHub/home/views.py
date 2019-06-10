@@ -11,6 +11,7 @@ from django.contrib.auth.decorators import login_required
 from django.core.exceptions import ObjectDoesNotExist
 from django.conf import settings
 
+
 def home(request):
     if request.user.is_authenticated is True:
         logged_user = request.user
@@ -117,12 +118,14 @@ def add_catalog(request, username, repository, path=None):
             for n, catalog in enumerate(catalogs_path):
                 if n == 0:
                     try:
-                        parental_catalog = Catalog.objects.get(name=catalog, repository_Id=searched_repository, parent_catalog=None)
+                        parental_catalog = Catalog.objects.get(name=catalog, repository_Id=searched_repository,
+                                                               parent_catalog=None)
                     except Catalog.DoesNotExist:
                         raise Http404("Catalog does not exist")
                 else:
                     try:
-                        parental_catalog = Catalog.objects.get(name=catalog, repository_Id=searched_repository, parent_catalog=parental_catalog)
+                        parental_catalog = Catalog.objects.get(name=catalog, repository_Id=searched_repository,
+                                                               parent_catalog=parental_catalog)
                     except Catalog.DoesNotExist:
                         raise Http404("Catalog does not exist")
         if request.method == 'POST':
@@ -176,12 +179,14 @@ def catalogs_and_files(request, username, repository, path):
         for n, catalog in enumerate(catalogs_path):
             if n == 0:
                 try:
-                    parental_catalog = Catalog.objects.get(name=catalog, repository_Id=searched_repository, parent_catalog=None)
+                    parental_catalog = Catalog.objects.get(name=catalog, repository_Id=searched_repository,
+                                                           parent_catalog=None)
                 except Catalog.DoesNotExist:
                     raise Http404("Catalog does not exist")
             else:
                 try:
-                    parental_catalog = Catalog.objects.get(name=catalog, repository_Id=searched_repository, parent_catalog=parental_catalog)
+                    parental_catalog = Catalog.objects.get(name=catalog, repository_Id=searched_repository,
+                                                           parent_catalog=parental_catalog)
                 except Catalog.DoesNotExist:
                     raise Http404("Catalog does not exist")
             url = url + '/' + catalog
@@ -205,6 +210,7 @@ def catalogs_and_files(request, username, repository, path):
         'files': files
     })
 
+
 @login_required
 def delete_catalog(request, username, repository, path):
     try:
@@ -221,12 +227,14 @@ def delete_catalog(request, username, repository, path):
             for n, catalog in enumerate(catalogs_path):
                 if n == 0:
                     try:
-                        parental_catalog = Catalog.objects.get(name=catalog, repository_Id=searched_repository, parent_catalog=None)
+                        parental_catalog = Catalog.objects.get(name=catalog, repository_Id=searched_repository,
+                                                               parent_catalog=None)
                     except Catalog.DoesNotExist:
                         raise Http404("Catalog does not exist")
                 else:
                     try:
-                        parental_catalog = Catalog.objects.get(name=catalog, repository_Id=searched_repository, parent_catalog=parental_catalog)
+                        parental_catalog = Catalog.objects.get(name=catalog, repository_Id=searched_repository,
+                                                               parent_catalog=parental_catalog)
                     except Catalog.DoesNotExist:
                         raise Http404("Catalog does not exist")
         else:
@@ -234,7 +242,7 @@ def delete_catalog(request, username, repository, path):
 
         parental_catalog.delete()
         return HttpResponseRedirect(
-            '/user/' + str(user) + "/" + str(searched_repository.name) + "/" + path[:-(len(catalogs_path[-1])+1)])
+            '/user/' + str(user) + "/" + str(searched_repository.name) + "/" + path[:-(len(catalogs_path[-1]) + 1)])
     else:
         return HttpResponse('Unauthorized', status=401)
 
@@ -245,11 +253,11 @@ def show_file(request, username, repository, path, filename, version):
         user = User.objects.get(username=username)
     except User.DoesNotExist:
         raise Http404("User does not exist")
-    if request.user == user:
-        try:
-            searched_repository = Repository.objects.get(owner=user, name=repository)
-        except Repository.DoesNotExist:
-            raise Http404("Repository does not exist")
+    try:
+        searched_repository = Repository.objects.get(owner=user, name=repository)
+    except Repository.DoesNotExist:
+        raise Http404("Repository does not exist")
+    if request.user == user or (request.user != user and searched_repository.is_public is True):
         if path is not None:
             catalogs_path = path.split('/')
             for n, catalog in enumerate(catalogs_path):
@@ -282,13 +290,13 @@ def show_file(request, username, repository, path, filename, version):
                     return HttpResponseServerError("Versioning error")
             else:
                 try:
-                    selected_file = Version.objects.get(file_Id_in=matching_files, version_nr=int(version))
+                    selected_file = Version.objects.get(file_Id__in=matching_files, version_nr=int(version))
                 except ValueError:
                     HttpResponseBadRequest("Invalid version number")
                 except Version.DoesNotExist:
                     return Http404("Version does not exist")
 
-            f = open('media/files/'+str(selected_file.file_Id.file_name), 'r')
+            f = open('media/files/' + str(selected_file.file_Id.file_name), 'r')
             file_content = f.read()
             f.close()
             context = {'file_content': file_content,
@@ -355,7 +363,7 @@ def compare_files(request, username, repository, path, filename, version1, versi
             except Version.DoesNotExist:
                 return Http404("Version does not exist")
 
-            f = open('media/files/'+str(selected_file_1.file_Id.file_name), 'r')
+            f = open('media/files/' + str(selected_file_1.file_Id.file_name), 'r')
             file_1_content = f.read()
             f.close()
             f = open('media/files/' + str(selected_file_2.file_Id.file_name), 'r')

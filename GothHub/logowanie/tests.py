@@ -16,7 +16,6 @@ class LoginPageTest(TestCase):
     # creating instance of a client.
     def setUp(self):
         self.client = Client()
-        call_command("loaddata", "' + 'programming_languages_definition.json' + '", verbosity=0)
 
     def test_login_url_resolves_to_index_page_view(self):
         found = resolve('/login/')
