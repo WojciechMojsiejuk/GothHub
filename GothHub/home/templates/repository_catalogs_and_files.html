@@ -6,25 +6,37 @@
         / <a href="{{ url }}">{{ name }}</a>
     {% endfor %}
     <div class="catalog">
-    <h1>Catalogs:</h1>
+    <h1>Katalogi:</h1>
       {% if catalogs is not None %}
+      <ul class="list-group">
         {% for catalog in catalogs %}
-          <a href="{{ path }}/{{ catalog.name }}"><h2>{{ catalog.name }}</h2></a>
-          <form method="get" action="{{ path }}/{{ catalog.name }}/edit_catalog">
-              <button class="btn btn-primary" type="submit" value="edytuj">Edytuj</button>
-          </form>
-          <form method="get" action="{{ path }}/{{ catalog.name }}/delete_catalog">
-              <button class="btn btn-primary" type="submit" value="usun">Usun</button>
-          </form>
+
+           <div class="row">
+            <div class="col-md-10">
+              <a href="{{ path }}/{{ catalog.name }}"><h2>{{ catalog.name }}</h2></a>
+            </div>
+            <div class="col-md-1">
+              <form method="get" action="{{ path }}/{{ catalog.name }}/edit_catalog">
+                  <button class="btn btn-light" type="submit" value="edytuj">Edytuj</button>
+              </form>
+            </div>
+            <div class="col-md-1">
+              <form method="get" action="{{ path }}/{{ catalog.name }}/delete_catalog">
+                  <button class="btn btn-light" type="submit" value="usun">Usuń</button>
+              </form>
+            </div>
+            </div>
+
         {% endfor %}
+      </ul>
       {% endif %}
       {% if files is not None %}
-      <h1>Files:</h1>
+      <h1>Pliki:</h1>
         {% for file in files %}
              <a href="{{ path }}/files/{{ file.file_name }}/latest"><h2>{{ file.file_name }}</h2></a>
 
           <button class="btn btn-primary" type="submit" value="edytuj">Edytuj</button>
-          <button class="btn btn-primary" type="submit" value="usun">Usun</button>
+          <button class="btn btn-primary" type="submit" value="usun">Usuń</button>
         {% endfor %}
       {% endif %}
       {% if catalogs_path %}
