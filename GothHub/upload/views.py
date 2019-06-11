@@ -32,19 +32,9 @@ def upload_file(request, username, repository, path):
                     parental_catalog = Catalog.objects.get(name=catalog, repository_Id=repo, parent_catalog=parental_catalog)
                 except Catalog.DoesNotExist:
                     raise Http404("Catalog does not exist")
-        # if parental_catalog is None:
-        #     catalog = Catalog.objects.get(
-        #         name=catalog,
-        #         repository_Id=repo,
-        #         parent_catalog=Catalog.objects.get(name=parental_catalog, repository_Id=repo))
-        # else:
-        #     catalog = Catalog.objects.get(name=catalog, repository_Id=repo, parent_catalog=None)
+
         if request.method == 'POST':
             form = FileUploadForm(request.POST, request.FILES)
-            #uploaded_file = request.FILES['document']
-            #fs = FileSystemStorage()
-            #name = fs.save(upladed_file.name, uploaded_file)
-
             if form.is_valid():
                 dir = form.cleaned_data.get('dir')
                 ex = os.path.splitext(str(dir.name))[1]
@@ -89,7 +79,7 @@ def upload_file(request, username, repository, path):
                             version_nr=1,
                         )
                         # TODO: change it to redirect to catalog view
-                        return redirect('/user/' + username + '/' + repository + '/' + path)
+
                     except MultipleObjectsReturned:
                         try:
                             older_files = File.objects.filter(file_name=dir.name, author=user, repository_Id=repo, catalog_Id=parental_catalog)
@@ -101,13 +91,14 @@ def upload_file(request, username, repository, path):
                                 catalog_Id=parental_catalog,
                                 dir=dir
                                 )
-                            latest_version = Version.objects.get(file_Id=older_files).values('version_nr').latest('version_nr')
+                            latest_version = Version.objects.filter(file_Id__in=older_files).values('version_nr').latest('version_nr')
                             Version.objects.create(
                                 file_Id=uploaded_file,
                                 version_nr=latest_version['version_nr'] + 1,
                             )
                         except File.DoesNotExist:
                             return HttpResponse('Internal Server Error', status=500)
+                    return redirect('/user/' + username + '/' + repository + '/' + path)
                 else:
                     return HttpResponse('Bad extension', status=406)
         else:
