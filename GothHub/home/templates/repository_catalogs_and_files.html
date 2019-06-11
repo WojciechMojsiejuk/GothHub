@@ -1,9 +1,9 @@
 {% extends "users_profile.html" %}
 {% block content_block %}
     {% if username != user.username %}<a href="/user/{{ username }}">Siema, {{ username }}</a>{% endif %}
-    <a>Obczaj sobie: </a><a href="/user/{{ username }}/{{ repository.name }}">{{repository.name}}</a>
+    <h2><a>Obczaj sobie: </a><a href="/user/{{ username }}/{{ repository.name }}">{{repository.name}}</a>
     {% for name, url in catalogs_path %}
-        / <a href="{{ url }}">{{ name }}</a>
+        / <a href="{{ url }}">{{ name }}</a></h2>
     {% endfor %}
     <div class="catalog">
     <h1>Katalogi:</h1>

@@ -1,13 +1,13 @@
 {% extends "users_profile.html" %}
 {% block content_block %}
-<a href="/user/{{ username }}/{{ repository.name }}">{{repository.name}}</a>
+<h2><a>Obczaj sobie: </a><a href="/user/{{ username }}/{{ repository.name }}">{{repository.name}}</a>
 {% for name, url in catalogs_path %}
-    / <a href="{{ url }}">{{ name }}</a>
+    / <a href="{{ url }}">{{ name }}</a></h2>
 {% endfor %}
     <div>
         <ul>
             {% for version in versions reversed %}
-               <li> <a href="{{ version.version_nr }}"><h2>{{ version }}</h2></a></li>
+               <li> <a href="{{ version.version_nr }}"><h4>{{ version }}</h4></a></li>
             {% endfor %}
         </ul>
 

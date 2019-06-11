@@ -1,7 +1,7 @@
 {% extends "general.html" %}
 {% block content_block %}
   {% if username %}
-    <a>Siema, {{ username }}! </a>
+    <h2>Siema, {{ username }}! Co dziś porobimy?</h2>
   {% endif %}
   {% if repositories_owner is not None %}
   <ul class="list-group">
@@ -25,7 +25,7 @@
         </div>
         <div class="col-md-2">
             <form method="get" action="/user/{{ request.user.username }}/{{ repository.name }}/delete_repository">
-                <button class="btn btn-primary" type="submit" value="usun">Usun</button>
+                <button class="btn btn-primary" type="submit" value="usun">Usuń</button>
             </form>
         </div>
 
