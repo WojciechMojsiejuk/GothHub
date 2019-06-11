@@ -1,26 +1,20 @@
 {% extends "users_profile.html" %}
 {% block content_block %}
+<a href="/user/{{ username }}/{{ repository.name }}">{{repository.name}}</a>
+{% for name, url in catalogs_path %}
+    / <a href="{{ url }}">{{ name }}</a>
+{% endfor %}
     <div>
-    <form action="{{version1}}/{{version2}}" method="post">
-    <select name="first_file">
-    {% for version1 in versions reversed %}
-        <option value={{ version1.version_nr }}>{{ version1 }}</option>
-    {% endfor %}
-    </select>
-    VS
-     <select name="second_file">
-    {% for version2 in versions reversed %}
-        <option value={{ version2.version_nr }}>{{ version2 }}</option>
-    {% endfor %}
-    </select>
-        <button class="btn btn-primary" type="submit" value="pokaz">Porównaj</button>
-    </form>
+    <ul>
+            {% for version in versions reversed %}
+               <li> <a href="/user/{{ username }}/{{ repository }}/{{ path }}/files/{{file_name}}/{{ version_1 }}/{{version.version_nr}}"><h2>{{ version }}</h2></a></li>
+            {% endfor %}
+    </ul>
+
     <form method="get" action="/user/{{ username }}/{{ repository }}/{{ path }}/files/{{file_name}}/{{ version_1 }}">
             <button class="btn btn-light" type="submit" value="Powrot">Powrót</button>
     </form>
     </div>
-
-
 
     <div class="container">
       <div class="row">

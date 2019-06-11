@@ -143,3 +143,15 @@ MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 MEDIA_URL = '/media/'
 
 LOGIN_URL = 'login:index'
+
+CAPTCHA_FONT_SIZE = 45
+
+CAPTCHA_IMAGE_SIZE = (250, 70)
+
+CAPTCHA_BACKGROUND_COLOR = '#111111'
+
+CAPTCHA_FOREGROUND_COLOR = 'white'
+
+CAPTCHA_LENGTH = 6
+
+CAPTCHA_OUTPUT_FORMAT = u'%(image)s <br> %(hidden_field)s %(text_field)s'

@@ -33,7 +33,12 @@
         {% endfor %}
       </ul>
       {% endif %}
-      <h1>Pliki:</h1>
+        {% if username == user.username %}
+            <form method="get" action="{{ path }}/add_catalog">
+                <button class="btn btn-primary" type="submit" value="dodajKatalog">Dodaj katalog</button>
+             </form>
+        {% endif %}
+    <h1>Pliki:</h1>
       {% if files is not None %}
 
         {% for file in files %}
@@ -43,10 +48,6 @@
              <a href="{{ path }}/files/{{ file.file_name }}/latest"><h2>{{ file.file_name }}</h2></a>
              </div>
              {% if username == request.user.username %}
-
-           <div class="col-md-1">
-                 <button class="btn btn-primary" type="submit" value="edytuj">Edytuj</button>
-               </div>
                <div class="col-md-1">
                  <button class="btn btn-primary" type="submit" value="usun">Usuń</button>
                </div>
@@ -54,15 +55,14 @@
              {% endif %}
         {% endfor %}
       {% endif %}
+        <br/>
+        <br/>
       {% if username == user.username %}
           {% if catalogs_path %}
               <form method="get" action="{{ path }}/upload">
                   <button class="btn btn-primary" type="submit" value="dodajPlik">Dodaj plik</button>
               </form>
           {% endif %}
-          <form method="get" action="{{ path }}/add_catalog">
-              <button class="btn btn-primary" type="submit" value="dodajKatalog">Dodaj katalog</button>
-          </form>
       {% endif %}
     </div>
 {% endblock %}
