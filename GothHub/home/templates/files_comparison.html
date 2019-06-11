@@ -6,9 +6,10 @@
 {% endfor %}
 </h2>
     <div>
+        <h2>Wybierz porównywaną wersję:</h2>
     <ul>
             {% for version in versions reversed %}
-               <li> <a href="/user/{{ username }}/{{ repository }}/{{ path }}/files/{{file_name}}/{{ version_1 }}/{{version.version_nr}}"><h2>{{ version }}</h2></a></li>
+               <li> <a href="/user/{{ username }}/{{ repository }}/{{ path }}/files/{{file_name}}/{{ version_1 }}/{{version.version_nr}}"><h4>{{ version }}</h4></a></li>
             {% endfor %}
     </ul>
 
@@ -20,9 +21,11 @@
     <div class="container">
       <div class="row">
          <div class="col-md-6">
+             <h1>{{ version_1 }}</h1>
             {{ file_1_content|linebreaks }}
          </div>
          <div class="col-md-6">
+              <h1>{{ version_2 }}</h1>
            {{ file_2_content|linebreaks }}
          </div>
       </div>
