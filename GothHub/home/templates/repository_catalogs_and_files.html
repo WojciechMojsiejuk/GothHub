@@ -11,17 +11,17 @@
       <ul class="list-group">
         {% for catalog in catalogs %}
            <div class="row">
-            <div class="col-md-10">
+            <div class="col-md-8">
               <a href="{{ path }}/{{ catalog.name }}"><h2>{{ catalog.name }}</h2></a>
             </div>
-                <div class="col-md-1">
+                <div class="col-md-2">
                   {% if username == user.username %}
                   <form method="get" action="{{ path }}/{{ catalog.name }}/edit_catalog">
                       <button class="btn btn-light" type="submit" value="edytuj">Edytuj</button>
                   </form>
                   {% endif %}
                 </div>
-                <div class="col-md-1">
+                <div class="col-md-2">
                   {% if username == user.username %}
                   <form method="get" action="{{ path }}/{{ catalog.name }}/delete_catalog">
                       <button class="btn btn-light" type="submit" value="usun">Usuń</button>
@@ -42,11 +42,13 @@
       <h1>Pliki:</h1>
         {% for file in files %}
         <div class="row">
-         <div class="col-md-10">
+         <div class="col-md-8">
              <a href="{{ path }}/files/{{ file.file_name }}/latest"><h2>{{ file.file_name }}</h2></a>
              </div>
              {% if username == request.user.username %}
-               <div class="col-md-1">
+             <div class="col-md-2">
+             </div>
+               <div class="col-md-2">
                  <button class="btn btn-light" type="submit" value="usun">Usuń</button>
                </div>
                </div>
@@ -56,7 +58,7 @@
       {% if username == user.username %}
           {% if catalogs_path %}
           <div class="row">
-           <div class="col-md-10">
+           <div class="col-md-12">
               <form method="get" action="{{ path }}/upload">
                   <button class="btn btn-primary" type="submit" value="dodajPlik">Dodaj plik</button>
               </form>
