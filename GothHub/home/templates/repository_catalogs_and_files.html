@@ -49,13 +49,14 @@
              </div>
              {% if username == request.user.username %}
                <div class="col-md-1">
+               <form method="get" action="{{ path }}/files/{{ file.file_name }}/delete_file">
                  <button class="btn btn-primary" type="submit" value="usun">Usuń</button>
+               </form>
                </div>
                </div>
              {% endif %}
         {% endfor %}
       {% endif %}
-        <br/>
         <br/>
       {% if username == user.username %}
           {% if catalogs_path %}
