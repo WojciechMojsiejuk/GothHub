@@ -1,7 +1,7 @@
 {% extends "users_profile.html" %}
 {% block content_block %}
-    {% if username != user.username %}<a href="/user/{{ username }}">{{ username }}</a>{% endif %}
-    <a href="/user/{{ username }}/{{ repository.name }}">{{repository.name}}</a>
+    {% if username != user.username %}<a href="/user/{{ username }}">Siema, {{ username }}</a>{% endif %}
+    <a>Obczaj sobie: </a><a href="/user/{{ username }}/{{ repository.name }}">{{repository.name}}</a>
     {% for name, url in catalogs_path %}
         / <a href="{{ url }}">{{ name }}</a>
     {% endfor %}
@@ -10,7 +10,6 @@
       {% if catalogs is not None %}
       <ul class="list-group">
         {% for catalog in catalogs %}
-
            <div class="row">
             <div class="col-md-10">
               <a href="{{ path }}/{{ catalog.name }}"><h2>{{ catalog.name }}</h2></a>
@@ -38,30 +37,31 @@
                 <button class="btn btn-primary" type="submit" value="dodajKatalog">Dodaj katalog</button>
              </form>
         {% endif %}
-    <h1>Pliki:</h1>
+
       {% if files is not None %}
-
+      <h1>Pliki:</h1>
         {% for file in files %}
-
         <div class="row">
          <div class="col-md-10">
              <a href="{{ path }}/files/{{ file.file_name }}/latest"><h2>{{ file.file_name }}</h2></a>
              </div>
              {% if username == request.user.username %}
                <div class="col-md-1">
-                 <button class="btn btn-primary" type="submit" value="usun">Usuń</button>
+                 <button class="btn btn-light" type="submit" value="usun">Usuń</button>
                </div>
                </div>
              {% endif %}
         {% endfor %}
       {% endif %}
-        <br/>
-        <br/>
       {% if username == user.username %}
           {% if catalogs_path %}
+          <div class="row">
+           <div class="col-md-10">
               <form method="get" action="{{ path }}/upload">
                   <button class="btn btn-primary" type="submit" value="dodajPlik">Dodaj plik</button>
               </form>
+              </div>
+              </div>
           {% endif %}
       {% endif %}
     </div>

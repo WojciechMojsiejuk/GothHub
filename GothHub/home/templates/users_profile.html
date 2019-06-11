@@ -1,7 +1,7 @@
 {% extends "general.html" %}
 {% block content_block %}
   {% if username %}
-    {{ username }}
+    <a>Siema, {{ username }}! </a>
   {% endif %}
   {% if repositories_owner is not None %}
   <ul class="list-group">
