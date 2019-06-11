@@ -5,22 +5,16 @@
     / <a href="{{ url }}">{{ name }}</a>
 {% endfor %}
     <div>
-    <form method="get" action={{ version.version_nr }}>
-    <select>
-    {% for version in versions reversed %}
-        <option value={{ version.version_nr }}>{{ version }}</option>
-    {% endfor %}
-    </select>
-    VS
-     <select>
-    {% for version in versions reversed %}
-        <option value={{ version.version_nr }}>{{ version }}</option>
-    {% endfor %}
-    </select>
-        <button class="btn btn-primary" type="submit" value="pokaz">Porównaj</button>
+    <ul>
+            {% for version in versions reversed %}
+               <li> <a href="/user/{{ username }}/{{ repository }}/{{ path }}/files/{{file_name}}/{{ version_1 }}/{{version.version_nr}}"><h2>{{ version }}</h2></a></li>
+            {% endfor %}
+    </ul>
+
+    <form method="get" action="/user/{{ username }}/{{ repository }}/{{ path }}/files/{{file_name}}/{{ version_1 }}">
+            <button class="btn btn-light" type="submit" value="Powrot">Powrót</button>
     </form>
     </div>
-
 
     <div class="container">
       <div class="row">

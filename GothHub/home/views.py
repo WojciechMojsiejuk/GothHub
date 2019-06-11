@@ -5,11 +5,11 @@ from django.contrib.auth.models import User
 from django.contrib.auth.decorators import login_required
 
 from .models import Repository, Catalog, File, Version
-from .forms import RepoCreationForm, CatalogCreationForm
+from .forms import RepoCreationForm, CatalogCreationForm, ShowFileForm
 from django.db import DatabaseError
 from django.contrib.auth.decorators import login_required
 from django.core.exceptions import ObjectDoesNotExist
-from django.conf import settings
+
 
 
 def home(request):
@@ -346,7 +346,7 @@ def show_file(request, username, repository, path, filename, version):
                         parental_catalog = Catalog.objects.get(name=catalog, repository_Id=searched_repository,
                                                                parent_catalog=None)
                     except Catalog.DoesNotExist:
-                        raise Http404("Katalog nie istnieje")
+                        raise Http404("Catalog does not exist")
                 else:
                     try:
                         parental_catalog = Catalog.objects.get(name=catalog, repository_Id=searched_repository,
@@ -362,28 +362,28 @@ def show_file(request, username, repository, path, filename, version):
                     author=user,
                     repository_Id=searched_repository,
                     catalog_Id=parental_catalog)
-                print(matching_files)
             except File.DoesNotExist:
-                raise Http404("Plik nie istnieje")
+                raise Http404("File does not exists")
             if version == "latest":
                 try:
                     selected_file = Version.objects.filter(file_Id__in=matching_files).latest('version_nr')
-                    print(selected_file)
                 except Version.DoesNotExist:
-                    return HttpResponseServerError("Błąd wersji")
+                    return HttpResponseServerError("Versioning error")
             else:
                 try:
                     selected_file = Version.objects.get(file_Id__in=matching_files, version_nr=int(version))
                 except ValueError:
-                    HttpResponseBadRequest("Nieprawidłowy numer wersji")
+                    HttpResponseBadRequest("Invalid version number")
                 except Version.DoesNotExist:
-                    return Http404("Wersja nie istnieje")
+                    return Http404("Version does not exist")
 
-            f = open('media/'+str(selected_file.file_Id.dir), 'r')
+            f = open('media/' + str(selected_file.file_Id.dir), 'r')
             file_content = f.read()
             print(file_content)
             f.close()
             context = {'file_content': file_content,
+                       'file_name': selected_file.file_Id.file_name,
+                       'file': selected_file,
                        'versions': Version.objects.filter(file_Id__in=matching_files),
                        'username': user,
                        'repository': searched_repository,
@@ -461,6 +461,9 @@ def compare_files(request, username, repository, path, filename, version1, versi
             f.close()
             context = {'file_1_content': file_1_content,
                        'file_2_content': file_2_content,
+                       'file_name': selected_file_1.file_Id.file_name,
+                       'version_1': version1,
+                       'version_2': version2,
                        'versions': Version.objects.filter(file_Id__in=matching_files),
                        'username': user,
                        'repository': searched_repository,

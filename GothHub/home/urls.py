@@ -17,6 +17,7 @@ urlpatterns = [
     path('user/<str:username>/<str:repository>/<path:path>/upload', include('upload.urls')),
     path('user/<str:username>/<str:repository>/add_catalog', views.add_catalog, name='add_catalog'),
     path('user/<str:username>/<str:repository>/<path:path>/add_catalog', views.add_catalog, name='add_catalog'),
+    path('user/<str:username>/<str:repository>/<path:path>/files/<str:filename>/delete_file', views.delete_file, name='delete_file'),
     path('user/<str:username>/<str:repository>/<path:path>/files/<str:filename>/<str:version>', views.show_file, name='show_file'),
     path('user/<str:username>/<str:repository>/<path:path>/files/<str:filename>/<str:version1>/<str:version2>', views.compare_files, name='compare_files'),
     path('user/<str:username>/<str:repository>/<path:path>/delete_catalog', views.delete_catalog, name='delete_catalog'),

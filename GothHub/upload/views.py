@@ -1,5 +1,4 @@
 from django.shortcuts import render, redirect
-from django.core.files.storage import FileSystemStorage
 from django.http import HttpResponseRedirect, Http404, HttpResponseForbidden, HttpResponse
 from home.forms import FileUploadForm
 from home.models import File, Repository, Catalog, Version
@@ -7,6 +6,7 @@ from django.http import HttpResponse
 from repository_statistics.models import ProgrammingLanguage
 from django.core.exceptions import MultipleObjectsReturned
 from django.contrib.auth.decorators import login_required
+from django.contrib.auth.models import User
 
 import os
 
