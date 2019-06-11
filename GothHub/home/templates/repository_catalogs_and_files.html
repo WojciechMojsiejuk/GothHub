@@ -1,27 +1,28 @@
 {% extends "users_profile.html" %}
 {% block content_block %}
     {% if username != user.username %}<a href="/user/{{ username }}">Siema, {{ username }}</a>{% endif %}
-    <a>Obczaj sobie: </a><a href="/user/{{ username }}/{{ repository.name }}">{{repository.name}}</a>
+    <h2><a>Obczaj sobie: </a><a href="/user/{{ username }}/{{ repository.name }}">{{repository.name}}</a>
     {% for name, url in catalogs_path %}
         / <a href="{{ url }}">{{ name }}</a>
     {% endfor %}
+    </h2>
     <div class="catalog">
     <h1>Katalogi:</h1>
       {% if catalogs is not None %}
       <ul class="list-group">
         {% for catalog in catalogs %}
            <div class="row">
-            <div class="col-md-10">
+            <div class="col-md-8">
               <a href="{{ path }}/{{ catalog.name }}"><h2>{{ catalog.name }}</h2></a>
             </div>
-                <div class="col-md-1">
+                <div class="col-md-2">
                   {% if username == user.username %}
                   <form method="get" action="{{ path }}/{{ catalog.name }}/edit_catalog">
                       <button class="btn btn-light" type="submit" value="edytuj">Edytuj</button>
                   </form>
                   {% endif %}
                 </div>
-                <div class="col-md-1">
+                <div class="col-md-2">
                   {% if username == user.username %}
                   <form method="get" action="{{ path }}/{{ catalog.name }}/delete_catalog">
                       <button class="btn btn-light" type="submit" value="usun">Usuń</button>
@@ -42,15 +43,16 @@
       <h1>Pliki:</h1>
         {% for file in files %}
         <div class="row">
-         <div class="col-md-10">
+         <div class="col-md-8">
              <a href="{{ path }}/files/{{ file.file_name }}/latest"><h2>{{ file.file_name }}</h2></a>
              </div>
              {% if username == request.user.username %}
-               <div class="col-md-1">
-               <form method="get" action="{{ path }}/files/{{ file.file_name }}/delete_file">
-                 <button class="btn btn-primary" type="submit" value="usun">Usuń</button>
-               </form>
-
+             <div class="col-md-2">
+             </div>
+               <div class="col-md-2">
+                 <form method="get" action="{{ path }}/files/{{ file.file_name }}/delete_file">
+                     <button class="btn btn-primary" type="submit" value="usun">Usuń</button>
+                 </form>
                </div>
                </div>
              {% endif %}
@@ -60,7 +62,7 @@
       {% if username == user.username %}
           {% if catalogs_path %}
           <div class="row">
-           <div class="col-md-10">
+           <div class="col-md-12">
               <form method="get" action="{{ path }}/upload">
                   <button class="btn btn-primary" type="submit" value="dodajPlik">Dodaj plik</button>
               </form>
