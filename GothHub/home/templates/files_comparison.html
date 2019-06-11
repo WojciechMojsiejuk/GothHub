@@ -1,6 +1,6 @@
 {% extends "users_profile.html" %}
 {% block content_block %}
-<a href="/user/{{ username }}/{{ repository.name }}">{{repository.name}}</a>
+<a>Obczaj sobie: </a><a href="/user/{{ username }}/{{ repository.name }}">{{repository.name}}</a>
 {% for name, url in catalogs_path %}
     / <a href="{{ url }}">{{ name }}</a>
 {% endfor %}
