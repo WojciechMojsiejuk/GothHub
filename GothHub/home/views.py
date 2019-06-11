@@ -338,6 +338,8 @@ def show_file(request, username, repository, path, filename, version):
     if request.user == user or (request.user != user and searched_repository.is_public is True):
         if path is not None:
             catalogs_path = path.split('/')
+            urls = []
+            url = '/user/' + user.username + '/' + searched_repository.name
             for n, catalog in enumerate(catalogs_path):
                 if n == 0:
                     try:
@@ -351,7 +353,8 @@ def show_file(request, username, repository, path, filename, version):
                                                                parent_catalog=parental_catalog)
                     except Catalog.DoesNotExist:
                         raise Http404("Katalog nie istnieje")
-            # TODO: make function from the above (this code is repeated many times)
+                url = url + '/' + catalog
+                urls.append((catalog, url))
             # Get file:
             try:
                 matching_files = File.objects.filter(
@@ -384,7 +387,8 @@ def show_file(request, username, repository, path, filename, version):
                        'versions': Version.objects.filter(file_Id__in=matching_files),
                        'username': user,
                        'repository': searched_repository,
-                       'path': path}
+                       'path': path,
+                       'catalogs_path': urls}
             return render(request, "file.html", context, content_type="text/html")
         else:
             raise Http404("Katalog nie istnieje")
@@ -405,6 +409,8 @@ def compare_files(request, username, repository, path, filename, version1, versi
             raise Http404("Repozytorium nie istnieje")
         if path is not None:
             catalogs_path = path.split('/')
+            urls = []
+            url = '/user/' + user.username + '/' + searched_repository.name
             for n, catalog in enumerate(catalogs_path):
                 if n == 0:
                     try:
@@ -418,6 +424,8 @@ def compare_files(request, username, repository, path, filename, version1, versi
                                                                parent_catalog=parental_catalog)
                     except Catalog.DoesNotExist:
                         raise Http404("Katalog nie istnieje")
+                url = url + '/' + catalog
+                urls.append((catalog, url))
             # Get files:
             try:
                 matching_files = File.objects.filter(
@@ -456,9 +464,53 @@ def compare_files(request, username, repository, path, filename, version1, versi
                        'versions': Version.objects.filter(file_Id__in=matching_files),
                        'username': user,
                        'repository': searched_repository,
-                       'path': path}
+                       'path': path,
+                       'catalogs_path': urls}
             return render(request, "files_comparison.html", context, content_type="text/html")
         else:
             raise Http404("Katalog nie istnieje")
     else:
         return HttpResponseForbidden('Nie masz uprawnień')
+
+
+@login_required
+def delete_file(request, username, repository, path, filename):
+    try:
+        user = User.objects.get(username=username)
+    except User.DoesNotExist:
+        raise Http404("User does not exist")
+    try:
+        searched_repository = Repository.objects.get(owner=user, name=repository)
+    except Repository.DoesNotExist:
+        raise Http404("Repository does not exist")
+    if request.user == user:
+        if path is not None:
+            catalogs_path = path.split('/')
+            for n, catalog in enumerate(catalogs_path):
+                if n == 0:
+                    try:
+                        parental_catalog = Catalog.objects.get(name=catalog, repository_Id=searched_repository,
+                                                               parent_catalog=None)
+                    except Catalog.DoesNotExist:
+                        raise Http404("Catalog does not exist")
+                else:
+                    try:
+                        parental_catalog = Catalog.objects.get(name=catalog, repository_Id=searched_repository,
+                                                               parent_catalog=parental_catalog)
+                    except Catalog.DoesNotExist:
+                        raise Http404("Catalog does not exist")
+            try:
+                matching_files = File.objects.filter(
+                    file_name=filename,
+                    author=user,
+                    repository_Id=searched_repository,
+                    catalog_Id=parental_catalog)
+                matching_files.delete()
+                new_path = '/user/' + username + '/' + repository + '/' + path
+                return HttpResponseRedirect(new_path)
+            except File.DoesNotExist:
+                raise Http404("File does not exists")
+        else:
+            raise Http404("Catalog does not exist")
+    else:
+        return HttpResponse('Unauthorized', status=401)

@@ -1,5 +1,9 @@
 {% extends "users_profile.html" %}
 {% block content_block %}
+<a href="/user/{{ username }}/{{ repository.name }}">{{repository.name}}</a>
+{% for name, url in catalogs_path %}
+    / <a href="{{ url }}">{{ name }}</a>
+{% endfor %}
     <div>
     <form method="get" action={{ version.version_nr }}>
     <select>
